@@ -1,0 +1,9 @@
+- [x] Add a new tab "Data Entry" to app.py.
+- [x] Within it, create sub-tabs or sections: "Log Exercise", "Log Nutrition", "Log Daily Check In".
+- [x] For "Log Exercise": Add radio button for activity type (Cycling/Running), date picker, and conditional input fields based on type.
+- [x] For "Log Nutrition": Date picker and input fields for nutrition data (Calories In, Protein, Carbs, etc.).
+- [x] For "Log Daily Check In": Date picker, sliders/scales for Mood, Energy, Dopamine Cravings, and other daily metrics like Sleep, Weight, RHR.
+- [x] Add a submit button for each section that appends the data to the DataFrame and saves to Excel.
+- [x] Test the forms by submitting sample data and verifying it appears in the app and Excel file.
+- [x] Update the "Data Editor" tab if needed, but keep it for advanced editing.
+- [x] Ensure the app reloads data after saving to reflect changes immediately.
