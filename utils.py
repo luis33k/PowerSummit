@@ -48,6 +48,6 @@ def get_top_kpis(df: pd.DataFrame) -> dict:
         'CTL': float(latest.get('CTL (42d EWMA)', np.nan)) if not pd.isna(latest.get('CTL (42d EWMA)', np.nan)) else 0.0,
         'ATL': float(latest.get('ATL (7d EWMA)', np.nan)) if not pd.isna(latest.get('ATL (7d EWMA)', np.nan)) else 0.0,
         'Latest TSB': float(latest.get('TSB (EWMA)', np.nan)) if not pd.isna(latest.get('TSB (EWMA)', np.nan)) else 0.0,
-        'Avg Sleep 7d': float(df['Sleep'].tail(7).mean()) if not df.empty and not pd.isna(df['Sleep'].tail(7).mean()) else 0.0
+        'Avg Sleep 7d': float(df['Sleep (hrs)'].tail(7).mean()) if not df.empty and not pd.isna(df['Sleep (hrs)'].tail(7).mean()) else 0.0
     }
     return kpis

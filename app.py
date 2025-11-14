@@ -34,7 +34,7 @@ os.makedirs("outputs", exist_ok=True)
 save_processed_data(df, "outputs/processed_master.csv")
 
 # Tabs
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Data Entry", "Data Editor"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Weekly Summary", "Data Entry", "Data Editor"])
 
 with tab1:
     st.header("Overview")
@@ -139,11 +139,39 @@ with tab5:
 
     # Recovery Score
     if 'TSB (EWMA)' in df.columns:
-        df['Recovery Score'] = df.apply(lambda row: compute_recovery_score(row['Sleep'], row['TSB (EWMA)']), axis=1)
+        df['Recovery Score'] = df.apply(lambda row: compute_recovery_score(row['Sleep (hrs)'], row['TSB (EWMA)']), axis=1)
         st.subheader("Recovery Score Over Time")
         st.line_chart(df.set_index('Date')['Recovery Score'])
 
 with tab6:
+    st.header("Weekly Summary")
+    # Resample to weekly
+    weekly_df = df.set_index('Date').resample('W').agg({
+        'Total Training Hr': 'sum',
+        'Cycling Duration (hrs)': 'sum',
+        'Cycling Distance (mi)': 'sum',
+        'Cycling Speed (mph)': lambda x: x.mean(),
+        'Run Dist (mi)': 'sum',
+        'Run Duration (hrs)': 'sum',
+        'Total TSS (Bike + Run)': 'sum',
+        'Avg Watt (Est)': 'mean',
+        'Total KJ': 'sum',
+        'Cycling Elevation (ft)': 'sum',
+        'RHR': 'mean',
+        'Calories Burned': 'sum',
+        'Calories In': 'sum',
+        'Surplus/Deficit': 'sum',
+        'Protein (g)': 'mean',
+        'Carbs (g)': 'mean',
+        'Sugar (g)': 'mean',
+        'Fat (g)': 'mean',
+        'Weight (lbs)': 'mean',
+        'Sleep (hrs)': 'mean'
+    }).reset_index()
+    weekly_df['Date/Week'] = weekly_df['Date']
+    st.dataframe(weekly_df)
+
+with tab7:
     st.header("Data Entry")
     subtab1, subtab2, subtab3 = st.tabs(["Log Exercise", "Log Nutrition", "Log Daily Check In"])
 
@@ -151,17 +179,24 @@ with tab6:
         st.subheader("Log Exercise")
         activity_type = st.radio("Activity Type", ["Cycling", "Running"])
         date = st.date_input("Date")
+        phase = st.text_input("Phase")
+        location = st.text_input("Location")
         if activity_type == "Cycling":
             duration = st.number_input("Duration (hrs)", min_value=0.0, step=0.1)
             distance = st.number_input("Distance (mi)", min_value=0.0, step=0.1)
-            avg_watt = st.number_input("Avg Watt", min_value=0, step=1)
-            carb_intra_fuel = st.number_input("Carb Intra Fuel (g)", min_value=0.0, step=0.1)
+            speed = st.number_input("Speed (mph)", min_value=0.0, step=0.1)
+            elevation = st.number_input("Elevation (ft)", min_value=0.0, step=0.1)
+            avg_watt = st.number_input("Avg Watt (Est)", min_value=0, step=1)
             session_type = st.selectbox("Session Type", ["Recovery", "Tempo", "Threshold", "VO2 Max", "Sweet Spot", "Intervals"])
+            position = st.text_input("Position")
+            wind = st.number_input("Wind (mph)", min_value=0.0, step=0.1)
+            temp = st.number_input("Temp (°F)", min_value=-50.0, max_value=120.0, step=0.1)
+            humidity = st.number_input("Humidity (%)", min_value=0.0, max_value=100.0, step=0.1)
+            ftp_used = st.number_input("FTP_used", min_value=0, step=1)
         else:  # Running
             duration = st.number_input("Duration (hrs)", min_value=0.0, step=0.1)
             distance = st.number_input("Distance (mi)", min_value=0.0, step=0.1)
             rpe = st.slider("RPE", min_value=1, max_value=10, value=5)
-            carb_intra_fuel = st.number_input("Carb Intra Fuel (g)", min_value=0.0, step=0.1)
             session_type = st.selectbox("Session Type", ["Easy", "Tempo", "Intervals", "Long Run"])
 
         if st.button("Submit Exercise"):
@@ -169,35 +204,48 @@ with tab6:
             if date_dt in df['Date'].values:
                 # Update existing row
                 idx = df[df['Date'] == date_dt].index[0]
-                df.at[idx, 'Activity Type'] = activity_type
+                df.at[idx, 'Phase'] = phase
+                df.at[idx, 'Location'] = location
                 if activity_type == "Cycling":
-                    df.at[idx, 'Cycling Duration'] = duration
-                    df.at[idx, 'Cycling Distance'] = distance
-                    df.at[idx, 'Avg Watt'] = avg_watt
-                    df.at[idx, 'Carb Intra Fuel'] = carb_intra_fuel
+                    df.at[idx, 'Sport'] = 'Cycling'
+                    df.at[idx, 'Cycling Duration (hrs)'] = duration
+                    df.at[idx, 'Cycling Distance (mi)'] = distance
+                    df.at[idx, 'Cycling Speed (mph)'] = speed
+                    df.at[idx, 'Cycling Elevation (ft)'] = elevation
+                    df.at[idx, 'Avg Watt (Est)'] = avg_watt
                     df.at[idx, 'Cycling Session Type'] = session_type
+                    df.at[idx, 'Position'] = position
+                    df.at[idx, 'Wind (mph)'] = wind
+                    df.at[idx, 'Temp (°F)'] = temp
+                    df.at[idx, 'Humidity (%)'] = humidity
+                    df.at[idx, 'FTP_used'] = ftp_used
                 else:
-                    df.at[idx, 'Run Duration'] = duration
-                    df.at[idx, 'Run Dist'] = distance
+                    df.at[idx, 'Sport'] = 'Running'
+                    df.at[idx, 'Run Duration (hrs)'] = duration
+                    df.at[idx, 'Run Dist (mi)'] = distance
                     df.at[idx, 'Run RPE'] = rpe
-                    df.at[idx, 'Carb Intra Fuel'] = carb_intra_fuel
                     df.at[idx, 'Run Session Type'] = session_type
             else:
                 # Append new row
-                new_row = {'Date': date_dt}
+                new_row = {'Date': date_dt, 'Phase': phase, 'Location': location}
                 if activity_type == "Cycling":
-                    new_row['Activity Type'] = 'Cycling'
-                    new_row['Cycling Duration'] = duration
-                    new_row['Cycling Distance'] = distance
-                    new_row['Avg Watt'] = avg_watt
-                    new_row['Carb Intra Fuel'] = carb_intra_fuel
+                    new_row['Sport'] = 'Cycling'
+                    new_row['Cycling Duration (hrs)'] = duration
+                    new_row['Cycling Distance (mi)'] = distance
+                    new_row['Cycling Speed (mph)'] = speed
+                    new_row['Cycling Elevation (ft)'] = elevation
+                    new_row['Avg Watt (Est)'] = avg_watt
                     new_row['Cycling Session Type'] = session_type
+                    new_row['Position'] = position
+                    new_row['Wind (mph)'] = wind
+                    new_row['Temp (°F)'] = temp
+                    new_row['Humidity (%)'] = humidity
+                    new_row['FTP_used'] = ftp_used
                 else:
-                    new_row['Activity Type'] = 'Run'
-                    new_row['Run Duration'] = duration
-                    new_row['Run Dist'] = distance
+                    new_row['Sport'] = 'Running'
+                    new_row['Run Duration (hrs)'] = duration
+                    new_row['Run Dist (mi)'] = distance
                     new_row['Run RPE'] = rpe
-                    new_row['Carb Intra Fuel'] = carb_intra_fuel
                     new_row['Run Session Type'] = session_type
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             # Save to Excel
@@ -215,6 +263,10 @@ with tab6:
         fat = st.number_input("Fat (g)", min_value=0.0, step=0.1)
         sugar = st.number_input("Sugar (g)", min_value=0.0, step=0.1)
         sodium = st.number_input("Sodium (g)", min_value=0.0, step=0.1)
+        potassium = st.number_input("Potassium (g)", min_value=0.0, step=0.1)
+        sodium_intra = st.number_input("Sodium intra (g)", min_value=0.0, step=0.1)
+        carb_intake_hr = st.number_input("Carb Intake/hr", min_value=0.0, step=0.1)
+        cycling_hydration_index = st.number_input("Cycling Hydration Index", min_value=0.0, step=0.1)
 
         if st.button("Submit Nutrition"):
             date_dt = pd.to_datetime(date)
@@ -222,14 +274,18 @@ with tab6:
                 # Update existing row
                 idx = df[df['Date'] == date_dt].index[0]
                 df.at[idx, 'Calories In'] = calories_in
-                df.at[idx, 'Protein'] = protein
-                df.at[idx, 'Carbs'] = carbs
-                df.at[idx, 'Fat'] = fat
-                df.at[idx, 'Sugar'] = sugar
-                df.at[idx, 'Sodium'] = sodium
+                df.at[idx, 'Protein (g)'] = protein
+                df.at[idx, 'Carbs (g)'] = carbs
+                df.at[idx, 'Fat (g)'] = fat
+                df.at[idx, 'Sugar (g)'] = sugar
+                df.at[idx, 'Sodium (g)'] = sodium
+                df.at[idx, 'Potassium (g)'] = potassium
+                df.at[idx, 'Sodium intra (g)'] = sodium_intra
+                df.at[idx, 'Carb Intake/hr'] = carb_intake_hr
+                df.at[idx, 'Cycling Hydration Index'] = cycling_hydration_index
             else:
                 # Append new row
-                new_row = {'Date': date_dt, 'Calories In': calories_in, 'Protein': protein, 'Carbs': carbs, 'Fat': fat, 'Sugar': sugar, 'Sodium': sodium}
+                new_row = {'Date': date_dt, 'Calories In': calories_in, 'Protein (g)': protein, 'Carbs (g)': carbs, 'Fat (g)': fat, 'Sugar (g)': sugar, 'Sodium (g)': sodium, 'Potassium (g)': potassium, 'Sodium intra (g)': sodium_intra, 'Carb Intake/hr': carb_intake_hr, 'Cycling Hydration Index': cycling_hydration_index}
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             from data_handler import save_master_log
             save_master_log(df, "sample_data/master_log.xlsx")
@@ -239,27 +295,33 @@ with tab6:
     with subtab3:
         st.subheader("Log Daily Check In")
         date = st.date_input("Date", key="checkin_date")
+        wake_time = st.time_input("Wake Time")
         sleep = st.number_input("Sleep (hrs)", min_value=0.0, step=0.1)
-        weight = st.number_input("Weight (lbs)", min_value=0.0, step=0.1)
         rhr = st.number_input("RHR", min_value=0, step=1)
-        mood = st.slider("Mood", min_value=1, max_value=10, value=5)
-        energy = st.slider("Energy", min_value=1, max_value=10, value=5)
-        dopamine_cravings = st.slider("Dopamine Cravings", min_value=1, max_value=10, value=5)
+        weight = st.number_input("Weight (lbs)", min_value=0.0, step=0.1)
+        mood = st.slider("Mood (1-10)", min_value=1, max_value=10, value=5)
+        energy = st.slider("Energy (1-10)", min_value=1, max_value=10, value=5)
+        hunger = st.slider("Hunger (1-10)", min_value=1, max_value=10, value=5)
+        dopamine_cravings = st.slider("Dopamine Cravings (1-10)", min_value=1, max_value=10, value=5)
+        notes = st.text_area("Notes")
 
         if st.button("Submit Check In"):
             date_dt = pd.to_datetime(date)
             if date_dt in df['Date'].values:
                 # Update existing row
                 idx = df[df['Date'] == date_dt].index[0]
-                df.at[idx, 'Sleep'] = sleep
-                df.at[idx, 'Weight'] = weight
+                df.at[idx, 'Wake Time'] = wake_time
+                df.at[idx, 'Sleep (hrs)'] = sleep
                 df.at[idx, 'RHR'] = rhr
-                df.at[idx, 'Mood'] = mood
-                df.at[idx, 'Energy'] = energy
-                df.at[idx, 'Dopamine Cravings'] = dopamine_cravings
+                df.at[idx, 'Weight (lbs)'] = weight
+                df.at[idx, 'Mood (1-10)'] = mood
+                df.at[idx, 'Energy (1-10)'] = energy
+                df.at[idx, 'Hunger (1-10)'] = hunger
+                df.at[idx, 'Dopamine Cravings (1-10)'] = dopamine_cravings
+                df.at[idx, 'Notes'] = notes
             else:
                 # Append new row
-                new_row = {'Date': date_dt, 'Sleep': sleep, 'Weight': weight, 'RHR': rhr, 'Mood': mood, 'Energy': energy, 'Dopamine Cravings': dopamine_cravings}
+                new_row = {'Date': date_dt, 'Wake Time': wake_time, 'Sleep (hrs)': sleep, 'RHR': rhr, 'Weight (lbs)': weight, 'Mood (1-10)': mood, 'Energy (1-10)': energy, 'Hunger (1-10)': hunger, 'Dopamine Cravings (1-10)': dopamine_cravings, 'Notes': notes}
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             from data_handler import save_master_log
             save_master_log(df, "sample_data/master_log.xlsx")

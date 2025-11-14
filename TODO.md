@@ -1,9 +1,6 @@
-- [x] Add a new tab "Data Entry" to app.py.
-- [x] Within it, create sub-tabs or sections: "Log Exercise", "Log Nutrition", "Log Daily Check In".
-- [x] For "Log Exercise": Add radio button for activity type (Cycling/Running), date picker, and conditional input fields based on type.
-- [x] For "Log Nutrition": Date picker and input fields for nutrition data (Calories In, Protein, Carbs, etc.).
-- [x] For "Log Daily Check In": Date picker, sliders/scales for Mood, Energy, Dopamine Cravings, and other daily metrics like Sleep, Weight, RHR.
-- [x] Add a submit button for each section that appends the data to the DataFrame and saves to Excel.
-- [x] Test the forms by submitting sample data and verifying it appears in the app and Excel file.
-- [x] Update the "Data Editor" tab if needed, but keep it for advanced editing.
-- [x] Ensure the app reloads data after saving to reflect changes immediately.
+- [ ] Update data_handler.py to load multiple sheets from master_log.xlsx (daily, weekly, training, tsb, nutrition, checkin), normalize column names, merge by Date into one master_df with all Daily Master Log columns, fill missing with NaN.
+- [ ] Update metrics.py to compute all metrics: Cycling IF/TSS/KJ, Run TSS/KJ, Totals (Training Hr, Mileage, TSS, KJ, Surplus/Deficit), Rolling 7d avgs for Avg Watt, TSS, Sleep, Carb Intake/hr, Surplus/Deficit, EWMA ATL (7d), CTL (42d), TSB, Watts/kg, kcal per Watt-hour.
+- [ ] Update app.py to add "Weekly Summary" tab with resampled weekly aggregates, enhance data entry sub-tabs to include additional fields (Phase, Location, etc.), update displays to use new columns/metrics.
+- [ ] Test the app: Run streamlit, verify data loading, metric computations, UI tabs, data entry updates Excel and recomputes metrics.
+- [ ] Ensure plots and visualizations are interactive for TSS/TSB, Avg Watt, Carb/hr, Sleep, RHR, Calories.
+- [ ] Confirm master log, weekly summaries, TSB, and daily metrics are fully functional and auto-updated.

@@ -73,8 +73,8 @@ def plot_small_multiples_sleep_carbs_salt(df: pd.DataFrame) -> go.Figure:
     """
     fig = make_subplots(rows=3, cols=1, subplot_titles=("Sleep", "Carbs", "Salt"))
 
-    if 'Sleep' in df.columns:
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['Sleep'], mode='lines'), row=1, col=1)
+    if 'Sleep (hrs)' in df.columns:
+        fig.add_trace(go.Scatter(x=df['Date'], y=df['Sleep (hrs)'], mode='lines'), row=1, col=1)
     if 'Carbs' in df.columns:
         fig.add_trace(go.Scatter(x=df['Date'], y=df['Carbs'], mode='lines'), row=2, col=1)
     if 'Salt' in df.columns:
@@ -93,7 +93,7 @@ def plot_avg_watt_over_time(df: pd.DataFrame) -> go.Figure:
     Returns:
         go.Figure: Plotly figure.
     """
-    fig = px.line(df, x='Date', y='Avg Watt', title="Avg Watt Over Time")
+    fig = px.line(df, x='Date', y='Avg Watt (Est)', title="Avg Watt Over Time")
     return fig
 
 def plot_carb_hr_vs_tss(df: pd.DataFrame) -> go.Figure:
@@ -123,7 +123,7 @@ def plot_sleep_trend(df: pd.DataFrame) -> go.Figure:
     Returns:
         go.Figure: Plotly figure.
     """
-    fig = px.line(df, x='Date', y='Sleep', title="Sleep Trend")
+    fig = px.line(df, x='Date', y='Sleep (hrs)', title="Sleep Trend")
     return fig
 
 def plot_rhr_trend(df: pd.DataFrame) -> go.Figure:
