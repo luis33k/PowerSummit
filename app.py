@@ -15,19 +15,15 @@ st.set_page_config(page_title="Training Dashboard", layout="wide")
 
 # Sidebar
 st.sidebar.title("Controls")
-uploaded_file = st.sidebar.file_uploader("Upload master_log.xlsx", type="xlsx")
 uploaded_gpx = st.sidebar.file_uploader("Upload GPX files", type="gpx", accept_multiple_files=True)
 ftp_input = st.sidebar.number_input("FTP (for GPX calculations)", min_value=0, value=200)
 date_range = st.sidebar.date_input("Date Range", [])
 show_series = st.sidebar.multiselect("Show Series", ["TSS", "TSB", "Sleep", "Carbs"], default=["TSS", "TSB"])
 
 # Load data
-if uploaded_file is not None:
-    df = load_master_log(uploaded_file)
-else:
-    default_path = "sample_data/master_log.xlsx"
-    os.makedirs("sample_data", exist_ok=True)
-    df = load_master_log(default_path)
+default_path = "sample_data/master_log.xlsx"
+os.makedirs("sample_data", exist_ok=True)
+df = load_master_log(default_path)
 
 # Process GPX files
 if uploaded_gpx:
@@ -60,7 +56,7 @@ os.makedirs("outputs", exist_ok=True)
 save_processed_data(df, "outputs/processed_master.csv")
 
 # Tabs
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Weekly Summary", "Data Entry", "Test", "Data Editor"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Weekly Summary", "Data Entry", "GPX Phraser", "Data Editor"])
 
 with tab1:
     st.header("Overview")
@@ -115,29 +111,20 @@ with tab3:
 
 with tab4:
     st.header("Nutrition")
-    # Daily calories, macros - assuming columns exist
-    if 'Calories In' in df.columns and not df.empty:
-        st.subheader("Calories In vs Calories Burned")
-        available_cols = ['Calories In']
-        if 'Cycling Calories Burned' in df.columns:
-            available_cols.append('Cycling Calories Burned')
-        if 'Run Calories Burned' in df.columns:
-            available_cols.append('Run Calories Burned')
-        if len(available_cols) > 1:
-            fig = df.set_index('Date')[available_cols].fillna(0).plot(kind='bar', stacked=True)
-            st.pyplot(fig.figure)
-
-    # Macros bar chart
-    macros = ['Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)']
-    available_macros = [m for m in macros if m in df.columns]
-    if available_macros and not df.empty:
-        st.subheader("Daily Macros")
-        fig = df.set_index('Date')[available_macros].fillna(0).plot(kind='bar', stacked=True)
-        st.pyplot(fig.figure)
-
-    st.subheader("Carbs/hr vs TSS")
-    fig = plot_carb_hr_vs_tss(df)
-    st.plotly_chart(fig, width='stretch')
+    # Daily summary of macros and weight
+    if not df.empty:
+        latest_row = df.iloc[-1]
+        st.subheader("Daily Summary")
+        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+        col1.metric("Calories", latest_row.get('Calories In', 'N/A') if pd.notna(latest_row.get('Calories In')) else 'N/A')
+        col2.metric("Protein", f"{latest_row.get('Protein (g)', 'N/A')}g" if pd.notna(latest_row.get('Protein (g)')) else 'N/A')
+        col3.metric("Carbs", f"{latest_row.get('Carbs (g)', 'N/A')}g" if pd.notna(latest_row.get('Carbs (g)')) else 'N/A')
+        col4.metric("Fat", f"{latest_row.get('Fat (g)', 'N/A')}g" if pd.notna(latest_row.get('Fat (g)')) else 'N/A')
+        col5.metric("Sodium", f"{latest_row.get('Sodium (g)', 'N/A')}g" if pd.notna(latest_row.get('Sodium (g)')) else 'N/A')
+        col6.metric("Potassium", f"{latest_row.get('Potassium (g)', 'N/A')}g" if pd.notna(latest_row.get('Potassium (g)')) else 'N/A')
+        col7.metric("Weight", f"{latest_row.get('Weight (lbs)', 'N/A')} lbs" if pd.notna(latest_row.get('Weight (lbs)')) else 'N/A')
+    else:
+        st.write("No data available.")
 
 with tab5:
     st.header("Recovery")
@@ -191,25 +178,29 @@ with tab7:
         st.subheader("Log Exercise")
         activity_type = st.radio("Activity Type", ["Cycling", "Running"])
         date = st.date_input("Date")
-        phase = st.text_input("Phase")
+        phase = st.selectbox("Phase", ["Build", "Peak", "Sustain", "Deload"])
         location = st.text_input("Location")
         if activity_type == "Cycling":
-            duration = st.number_input("Duration (hrs)", min_value=0.0, step=0.1)
-            distance = st.number_input("Distance (mi)", min_value=0.0, step=0.1)
-            speed = st.number_input("Speed (mph)", min_value=0.0, step=0.1)
-            elevation = st.number_input("Elevation (ft)", min_value=0.0, step=0.1)
-            avg_watt = st.number_input("Avg Watt (Est)", min_value=0, step=1)
-            session_type = st.selectbox("Session Type", ["Recovery", "Tempo", "Threshold", "VO2 Max", "Sweet Spot", "Intervals"])
+            duration = st.number_input("Duration (hrs)", min_value=0.0, step=0.1, key="cycling_duration")
+            distance = st.number_input("Distance (mi)", min_value=0.0, step=0.1, key="cycling_distance")
+            speed = st.number_input("Speed (mph)", min_value=0.0, step=0.1, key="cycling_speed")
+            elevation = st.number_input("Elevation (ft)", min_value=0.0, step=0.1, key="cycling_elevation")
+            avg_watt = st.number_input("Avg Watt (Est)", min_value=0, step=1, key="cycling_avg_watt")
+            session_type = st.selectbox("Session Type", ["Recovery", "Zone 1", "Zone 2", "Zone 3", "Tempo", "Threshold", "VO2 Max", "Sweet Spot", "Intervals"])
             position = st.text_input("Position")
-            wind = st.number_input("Wind (mph)", min_value=0.0, step=0.1)
-            temp = st.number_input("Temp (°F)", min_value=-50.0, max_value=120.0, step=0.1)
-            humidity = st.number_input("Humidity (%)", min_value=0.0, max_value=100.0, step=0.1)
-            ftp_used = st.number_input("FTP_used", min_value=0, step=1)
+            wind = st.number_input("Wind (mph)", min_value=0.0, step=0.1, key="cycling_wind")
+            temp = st.number_input("Temp (°F)", min_value=-50.0, max_value=120.0, step=0.1, key="cycling_temp")
+            humidity = st.number_input("Humidity (%)", min_value=0.0, max_value=100.0, step=0.1, key="cycling_humidity")
+            ftp_used = st.number_input("FTP_used", min_value=0, step=1, key="cycling_ftp_used")
+            carb_intake_hr = st.number_input("Carb Intake/hr", min_value=0.0, step=0.1, key="cycling_carb_intake_hr")
+            sodium_intra = st.number_input("Sodium intra (g)", min_value=0.0, step=0.1, key="cycling_sodium_intra")
         else:  # Running
-            duration = st.number_input("Duration (hrs)", min_value=0.0, step=0.1)
-            distance = st.number_input("Distance (mi)", min_value=0.0, step=0.1)
+            duration = st.number_input("Duration (hrs)", min_value=0.0, step=0.1, key="running_duration")
+            distance = st.number_input("Distance (mi)", min_value=0.0, step=0.1, key="running_distance")
             rpe = st.slider("RPE", min_value=1, max_value=10, value=5)
-            session_type = st.selectbox("Session Type", ["Easy", "Tempo", "Intervals", "Long Run"])
+            session_type = st.selectbox("Session Type", ["Easy", "Zone 1", "Zone 2", "Zone 3", "Tempo", "Intervals", "Long Run"])
+            carb_intake_hr = st.number_input("Carb Intake/hr", min_value=0.0, step=0.1, key="running_carb_intake_hr")
+            sodium_intra = st.number_input("Sodium intra (g)", min_value=0.0, step=0.1, key="running_sodium_intra")
 
         if st.button("Submit Exercise"):
             date_dt = pd.to_datetime(date)
@@ -231,12 +222,18 @@ with tab7:
                     df.at[idx, 'Temp (°F)'] = temp
                     df.at[idx, 'Humidity (%)'] = humidity
                     df.at[idx, 'FTP_used'] = ftp_used
+                    df.at[idx, 'Carb Intake/hr'] = carb_intake_hr
+                    df.at[idx, 'Sodium intra (g)'] = sodium_intra
+                    df.at[idx, 'Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
                 else:
                     df.at[idx, 'Sport'] = 'Running'
                     df.at[idx, 'Run Duration (hrs)'] = duration
                     df.at[idx, 'Run Dist (mi)'] = distance
                     df.at[idx, 'Run RPE'] = rpe
                     df.at[idx, 'Run Session Type'] = session_type
+                    df.at[idx, 'Carb Intake/hr'] = carb_intake_hr
+                    df.at[idx, 'Sodium intra (g)'] = sodium_intra
+                    df.at[idx, 'Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
             else:
                 # Append new row
                 new_row = {'Date': date_dt, 'Phase': phase, 'Location': location}
@@ -253,12 +250,18 @@ with tab7:
                     new_row['Temp (°F)'] = temp
                     new_row['Humidity (%)'] = humidity
                     new_row['FTP_used'] = ftp_used
+                    new_row['Carb Intake/hr'] = carb_intake_hr
+                    new_row['Sodium intra (g)'] = sodium_intra
+                    new_row['Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
                 else:
                     new_row['Sport'] = 'Running'
                     new_row['Run Duration (hrs)'] = duration
                     new_row['Run Dist (mi)'] = distance
                     new_row['Run RPE'] = rpe
                     new_row['Run Session Type'] = session_type
+                    new_row['Carb Intake/hr'] = carb_intake_hr
+                    new_row['Sodium intra (g)'] = sodium_intra
+                    new_row['Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             # Save to Excel
             from data_handler import save_master_log
@@ -276,9 +279,6 @@ with tab7:
         sugar = st.number_input("Sugar (g)", min_value=0.0, step=0.1)
         sodium = st.number_input("Sodium (g)", min_value=0.0, step=0.1)
         potassium = st.number_input("Potassium (g)", min_value=0.0, step=0.1)
-        sodium_intra = st.number_input("Sodium intra (g)", min_value=0.0, step=0.1)
-        carb_intake_hr = st.number_input("Carb Intake/hr", min_value=0.0, step=0.1)
-        cycling_hydration_index = st.number_input("Cycling Hydration Index", min_value=0.0, step=0.1)
 
         if st.button("Submit Nutrition"):
             date_dt = pd.to_datetime(date)
@@ -292,12 +292,9 @@ with tab7:
                 df.at[idx, 'Sugar (g)'] = sugar
                 df.at[idx, 'Sodium (g)'] = sodium
                 df.at[idx, 'Potassium (g)'] = potassium
-                df.at[idx, 'Sodium intra (g)'] = sodium_intra
-                df.at[idx, 'Carb Intake/hr'] = carb_intake_hr
-                df.at[idx, 'Cycling Hydration Index'] = cycling_hydration_index
             else:
                 # Append new row
-                new_row = {'Date': date_dt, 'Calories In': calories_in, 'Protein (g)': protein, 'Carbs (g)': carbs, 'Fat (g)': fat, 'Sugar (g)': sugar, 'Sodium (g)': sodium, 'Potassium (g)': potassium, 'Sodium intra (g)': sodium_intra, 'Carb Intake/hr': carb_intake_hr, 'Cycling Hydration Index': cycling_hydration_index}
+                new_row = {'Date': date_dt, 'Calories In': calories_in, 'Protein (g)': protein, 'Carbs (g)': carbs, 'Fat (g)': fat, 'Sugar (g)': sugar, 'Sodium (g)': sodium, 'Potassium (g)': potassium}
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             from data_handler import save_master_log
             save_master_log(df, "sample_data/master_log.xlsx")

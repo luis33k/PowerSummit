@@ -212,4 +212,22 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
     df['CTL (42d EWMA)'] = ctl
     df['TSB (EWMA)'] = tsb
 
+    # Recovery Rate based on Phase
+    phase_mapping = {'Build': 1.5, 'Peak': 1.5, 'Sustain': 2.0, 'Deload': 3.0}
+    df['recovery_rate'] = df.get('Phase', '').map(phase_mapping)
+
+    # Relative TSB Calculation
+    df['relative_tsb'] = np.nan
+    if not df.empty:
+        df.loc[0, 'relative_tsb'] = 0.0  # Initial value
+        for i in range(1, len(df)):
+            prev_relative_tsb = df.loc[i-1, 'relative_tsb']
+            current_tss = df.loc[i, 'Total TSS (Bike + Run)']
+            recovery_rate = df.loc[i, 'recovery_rate']
+            atl = df.loc[i, 'ATL (7d EWMA)']
+            if pd.notna(current_tss) and pd.notna(recovery_rate) and pd.notna(atl):
+                df.loc[i, 'relative_tsb'] = prev_relative_tsb + (current_tss * recovery_rate) - (atl / 100)
+            else:
+                df.loc[i, 'relative_tsb'] = prev_relative_tsb
+
     return df
