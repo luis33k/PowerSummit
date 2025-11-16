@@ -34,6 +34,8 @@ def plot_weekly_tss(df: pd.DataFrame) -> go.Figure:
     Returns:
         go.Figure: Plotly figure.
     """
+    if not pd.api.types.is_datetime64_any_dtype(df['Date']):
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
     df['Week'] = df['Date'].dt.to_period('W').astype(str)
     weekly_tss = df.groupby('Week')['Total TSS (Bike + Run)'].sum().reset_index()
 

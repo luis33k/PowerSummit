@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from data_handler import load_master_log
+from data_handler import load_master_log, merge_gpx_data
 from metrics import compute_all_metrics
 from plots import (
     plot_tss_tsb_over_time, plot_weekly_tss, plot_speed_vs_hr,
@@ -8,6 +8,7 @@ from plots import (
     plot_carb_hr_vs_tss, plot_sleep_trend, plot_rhr_trend
 )
 from utils import save_processed_data, get_top_kpis, compute_recovery_score
+from gpx_parser import load_gpx_files
 import os
 
 st.set_page_config(page_title="Training Dashboard", layout="wide")
@@ -15,6 +16,8 @@ st.set_page_config(page_title="Training Dashboard", layout="wide")
 # Sidebar
 st.sidebar.title("Controls")
 uploaded_file = st.sidebar.file_uploader("Upload master_log.xlsx", type="xlsx")
+uploaded_gpx = st.sidebar.file_uploader("Upload GPX files", type="gpx", accept_multiple_files=True)
+ftp_input = st.sidebar.number_input("FTP (for GPX calculations)", min_value=0, value=200)
 date_range = st.sidebar.date_input("Date Range", [])
 show_series = st.sidebar.multiselect("Show Series", ["TSS", "TSB", "Sleep", "Carbs"], default=["TSS", "TSB"])
 
@@ -26,6 +29,29 @@ else:
     os.makedirs("sample_data", exist_ok=True)
     df = load_master_log(default_path)
 
+# Process GPX files
+if uploaded_gpx:
+    current_files = [f.name for f in uploaded_gpx]
+    if current_files != st.session_state.get('uploaded_files', []):
+        gpx_contents = []
+        for file in uploaded_gpx:
+            try:
+                content = file.read().decode('utf-8')
+                gpx_contents.append(content)
+            except UnicodeDecodeError:
+                st.sidebar.error(f"Failed to decode {file.name}. Ensure it's a valid GPX file.")
+                continue
+        st.session_state['gpx_contents'] = gpx_contents
+        st.session_state['uploaded_files'] = current_files
+    gpx_contents = st.session_state.get('gpx_contents', [])
+    if gpx_contents:
+        gpx_df = load_gpx_files(gpx_contents, ftp=ftp_input)
+        df = merge_gpx_data(df, gpx_df)
+        # Save updated df to Excel
+        from data_handler import save_master_log
+        save_master_log(df, default_path)
+        st.sidebar.success(f"Processed {len(gpx_contents)} GPX file(s) and saved to master log")
+
 # Compute metrics
 df = compute_all_metrics(df)
 
@@ -34,7 +60,7 @@ os.makedirs("outputs", exist_ok=True)
 save_processed_data(df, "outputs/processed_master.csv")
 
 # Tabs
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Weekly Summary", "Data Entry", "Data Editor"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Weekly Summary", "Data Entry", "Test", "Data Editor"])
 
 with tab1:
     st.header("Overview")
@@ -57,25 +83,17 @@ with tab1:
 
 with tab2:
     st.header("Cycling")
-    activity_type = df.get('Activity Type', pd.Series([''] * len(df))).astype(str)
-    cycling_df = df[activity_type.str.lower() == 'cycling']
-    cols = ['Date']
-    if 'Duration' in cycling_df.columns and 'Duration' not in cols:
-        cols.append('Duration')
-    if 'Avg Watt' in cycling_df.columns and 'Avg Watt' not in cols:
-        cols.append('Avg Watt')
-    if 'IF' in cycling_df.columns and 'IF' not in cols:
-        cols.append('IF')
-    if 'Cycling TSS' in cycling_df.columns and 'Cycling TSS' not in cols:
-        cols.append('Cycling TSS')
+    sport = df.get('Sport', pd.Series([''] * len(df))).astype(str)
+    cycling_df = df[sport.str.lower().isin(['cycling', 'bike'])]
+    cols = ['Date', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Intensity Factor (IF)', 'Cycling TSS (Est)', 'Cycling Session Type']
     cols = [col for col in cols if col in cycling_df.columns]
     st.dataframe(cycling_df[cols])
 
     # Filter by session type if column exists
-    if 'Session Type' in df.columns:
-        session_types = st.multiselect("Filter Session Type", cycling_df['Session Type'].unique())
+    if 'Cycling Session Type' in cycling_df.columns:
+        session_types = st.multiselect("Filter Session Type", cycling_df['Cycling Session Type'].unique())
         if session_types:
-            cycling_df = cycling_df[cycling_df['Session Type'].isin(session_types)]
+            cycling_df = cycling_df[cycling_df['Cycling Session Type'].isin(session_types)]
 
     st.subheader("Avg Watt Over Time")
     fig = plot_avg_watt_over_time(cycling_df)
@@ -83,21 +101,15 @@ with tab2:
 
 with tab3:
     st.header("Running")
-    activity_type = df.get('Activity Type', pd.Series([''] * len(df))).astype(str)
-    running_df = df[activity_type.str.lower() == 'run']
-    cols = ['Date']
-    if 'Duration' in running_df.columns and 'Duration' not in cols:
-        cols.append('Duration')
-    if 'RPE' in running_df.columns and 'RPE' not in cols:
-        cols.append('RPE')
-    if 'Run TSS' in running_df.columns and 'Run TSS' not in cols:
-        cols.append('Run TSS')
-    st.dataframe(running_df[cols])
+    sport = df.get('Sport', pd.Series([''] * len(df))).astype(str)
+    running_df = df[sport.str.lower().isin(['running', 'run'])]
+    cols = ['Date', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run TSS (Est)', 'Run Session Type']
+    cols = [col for col in cols if col in running_df.columns]
 
     # RPE filter
-    if 'RPE' in running_df.columns:
+    if 'Run RPE' in running_df.columns:
         rpe_range = st.slider("RPE Range", min_value=1, max_value=10, value=(1,10))
-        running_df = running_df[(running_df['RPE'] >= rpe_range[0]) & (running_df['RPE'] <= rpe_range[1])]
+        running_df = running_df[(running_df['Run RPE'] >= rpe_range[0]) & (running_df['Run RPE'] <= rpe_range[1])]
 
     st.dataframe(running_df[cols])
 
@@ -328,7 +340,16 @@ with tab7:
             st.success("Daily check in logged successfully!")
             st.rerun()
 
-with tab7:
+with tab8:
+    st.header("Test")
+    if 'gpx_contents' in st.session_state and st.session_state['gpx_contents']:
+        st.subheader("GPX Data Preview")
+        gpx_df = load_gpx_files(st.session_state['gpx_contents'], ftp=ftp_input)
+        st.dataframe(gpx_df)
+    else:
+        st.write("Upload GPX files in the sidebar to test parsing.")
+
+with tab9:
     st.header("Data Editor")
     edited_df = st.data_editor(df, num_rows="dynamic")
     if st.button("Save Changes", key="save_editor"):

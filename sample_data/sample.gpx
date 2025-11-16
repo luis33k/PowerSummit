@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Test GPX" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <trk>
+    <name>Test Ride</name>
+    <trkseg>
+      <trkpt lat="37.7749" lon="-122.4194">
+        <ele>10.0</ele>
+        <time>2023-10-01T10:00:00Z</time>
+        <extensions>
+          <power>200</power>
+          <hr>150</hr>
+        </extensions>
+      </trkpt>
+      <trkpt lat="37.7849" lon="-122.4294">
+        <ele>15.0</ele>
+        <time>2023-10-01T10:30:00Z</time>
+        <extensions>
+          <power>210</power>
+          <hr>155</hr>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

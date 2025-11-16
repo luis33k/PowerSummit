@@ -140,6 +140,23 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
     if 'Cycling Duration (hrs)' in df.columns and 'Cycling Intensity Factor (IF)' in df.columns:
         df['Cycling TSS (Est)'] = df['Cycling Duration (hrs)'] * (df['Cycling Intensity Factor (IF)'] ** 2) * 100
 
+    # Use GPX-derived metrics if available
+    if 'GPX IF' in df.columns:
+        if 'Cycling Intensity Factor (IF)' not in df.columns:
+            df['Cycling Intensity Factor (IF)'] = df['GPX IF']
+        else:
+            df['Cycling Intensity Factor (IF)'] = df['GPX IF'].fillna(df['Cycling Intensity Factor (IF)'])
+    if 'GPX TSS' in df.columns:
+        if 'Cycling TSS (Est)' not in df.columns:
+            df['Cycling TSS (Est)'] = df['GPX TSS']
+        else:
+            df['Cycling TSS (Est)'] = df['GPX TSS'].fillna(df['Cycling TSS (Est)'])
+    if 'GPX KJ' in df.columns:
+        if 'Cycling KJ' not in df.columns:
+            df['Cycling KJ'] = df['GPX KJ']
+        else:
+            df['Cycling KJ'] = df['GPX KJ'].fillna(df['Cycling KJ'])
+
     # Running Calculations
     if 'Run Duration (hrs)' in df.columns and 'Run RPE' in df.columns:
         duration_min = df['Run Duration (hrs)'] * 60
@@ -169,7 +186,7 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
         df['Watts/kg'] = df['Avg Watt (Est)'] / weight_kg
 
     # kcal per Watt-hour
-    if 'Calories Burned' in df.columns and 'Cycling Duration (hrs)' in df.columns:
+    if 'Calories Burned' in df.columns and 'Cycling Duration (hrs)' in df.columns and 'Avg Watt (Est)' in df.columns:
         df['kcal per Watt-hour'] = df['Calories Burned'] / (df['Avg Watt (Est)'] * df['Cycling Duration (hrs)'])
 
     # Recovery Score: (Sleep × 0.4) + (Mood × 0.3) + (RHR variability × 0.3)
@@ -187,7 +204,7 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
             # Convert to numeric first
             df[col] = pd.to_numeric(df[col], errors='coerce')
             df[f'{col} (7d Avg)'] = df.set_index('Date')[col].rolling(window=7).mean().reset_index(drop=True)
-            df[f'{col} (7d Avg)'] = pd.to_numeric(df[f'{col} (7d Avg)'], errors='coerce')
+            df[f'{col} (7d Avg)'] = pd.to_numeric(df[f'{col} (7d Avg)'], errors='coerce').ffill()
 
     # Fitness/Fatigue Formulas
     atl, ctl, tsb = calculate_atl_ctl_tsb(df['Total TSS (Bike + Run)'])

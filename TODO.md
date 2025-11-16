@@ -1,6 +1,8 @@
-- [ ] Update data_handler.py to load multiple sheets from master_log.xlsx (daily, weekly, training, tsb, nutrition, checkin), normalize column names, merge by Date into one master_df with all Daily Master Log columns, fill missing with NaN.
-- [ ] Update metrics.py to compute all metrics: Cycling IF/TSS/KJ, Run TSS/KJ, Totals (Training Hr, Mileage, TSS, KJ, Surplus/Deficit), Rolling 7d avgs for Avg Watt, TSS, Sleep, Carb Intake/hr, Surplus/Deficit, EWMA ATL (7d), CTL (42d), TSB, Watts/kg, kcal per Watt-hour.
-- [ ] Update app.py to add "Weekly Summary" tab with resampled weekly aggregates, enhance data entry sub-tabs to include additional fields (Phase, Location, etc.), update displays to use new columns/metrics.
-- [ ] Test the app: Run streamlit, verify data loading, metric computations, UI tabs, data entry updates Excel and recomputes metrics.
-- [ ] Ensure plots and visualizations are interactive for TSS/TSB, Avg Watt, Carb/hr, Sleep, RHR, Calories.
-- [ ] Confirm master log, weekly summaries, TSB, and daily metrics are fully functional and auto-updated.
+- [ ] Update requirements.txt to include gpxpy, pandas, numpy, streamlit, plotly, matplotlib, openpyxl, scipy.
+- [ ] Create gpx_parser.py: functions to parse GPX files, extract Date, Duration, Distance, Elevation Gain, Avg/Max HR, Avg/Max Power, Speed; compute cycling IF (Avg Power / FTP), TSS (Duration * IF^2 * 100), KJ (Duration * Avg Power * 3600 / 1000), Watts/kg; handle running if HR data available.
+- [ ] Update data_handler.py: add function to load GPX files, extract data using gpx_parser, merge into master DF by Date.
+- [x] Update metrics.py: modify compute_all_metrics to use GPX-derived columns for calculations, ensure TSB = CTL - ATL, update rolling averages, EWMA, etc.
+- [ ] Update app.py: add GPX file uploader in sidebar (multiple files), process and merge GPX data; add overview cards (Total Training Hours all-time/weekly, Total Miles all-time/weekly, Cycling vs Running Miles, Avg Sleep, Avg Calories In/Burned, Avg Watt, Avg Elevation Gain, Latest TSB); update weekly summary tab with resample('W').agg(); add test tab to load sample GPX + logs and verify calculations.
+- [ ] Update plots.py: ensure all plots are interactive Plotly; add new plots if needed (e.g., elevation over time, calories in vs burned, carb intake per ride).
+- [ ] Update utils.py: enhance get_top_kpis with new metrics (total hrs/miles, etc.).
+- [ ] Install dependencies and test app with GPX uploads, verify metrics, UI, and test tab.

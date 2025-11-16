@@ -1,5 +1,7 @@
 import pandas as pd
+import numpy as np
 import os
+from gpx_parser import load_gpx_files
 
 def load_master_log(path: str) -> pd.DataFrame:
     """
@@ -92,6 +94,58 @@ def load_master_log(path: str) -> pd.DataFrame:
         df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
         df = df.sort_values('Date').reset_index(drop=True)
 
+    return df
+
+def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Merge GPX data into the master DataFrame by Date.
+
+    For cycling GPX, map to cycling columns; for running, to run columns.
+    If date not present, append new row.
+
+    Args:
+        df (pd.DataFrame): Master DataFrame.
+        gpx_df (pd.DataFrame): GPX DataFrame.
+
+    Returns:
+        pd.DataFrame: Merged DataFrame.
+    """
+    for _, row in gpx_df.iterrows():
+        date = row['Date']
+        existing = df['Date'] == date
+        if existing.any():
+            # Update existing row
+            idx = df[existing].index[0]
+            if not pd.isna(row.get('GPX Avg Power', np.nan)):
+                # Cycling
+                df.at[idx, 'Cycling Duration (hrs)'] = row.get('GPX Duration (hrs)', np.nan)
+                df.at[idx, 'Cycling Distance (mi)'] = row.get('GPX Distance (mi)', np.nan)
+                df.at[idx, 'Cycling Elevation (ft)'] = row.get('GPX Elevation Gain (ft)', np.nan)
+                df.at[idx, 'Avg Watt (Est)'] = float(row.get('GPX Avg Power', np.nan))
+                df.at[idx, 'Cycling Speed (mph)'] = row.get('GPX Avg Speed (mph)', np.nan)
+                df.at[idx, 'Sport'] = 'Cycling'
+            else:
+                # Running
+                df.at[idx, 'Run Duration (hrs)'] = row.get('GPX Duration (hrs)', np.nan)
+                df.at[idx, 'Run Dist (mi)'] = row.get('GPX Distance (mi)', np.nan)
+                df.at[idx, 'Sport'] = 'Running'
+        else:
+            # Append new row
+            new_row = {'Date': date}
+            if not pd.isna(row.get('GPX Avg Power', np.nan)):
+                # Cycling
+                new_row['Cycling Duration (hrs)'] = row.get('GPX Duration (hrs)', np.nan)
+                new_row['Cycling Distance (mi)'] = row.get('GPX Distance (mi)', np.nan)
+                new_row['Cycling Elevation (ft)'] = row.get('GPX Elevation Gain (ft)', np.nan)
+                new_row['Avg Watt (Est)'] = float(row.get('GPX Avg Power', np.nan))
+                new_row['Cycling Speed (mph)'] = row.get('GPX Avg Speed (mph)', np.nan)
+                new_row['Sport'] = 'Cycling'
+            else:
+                # Running
+                new_row['Run Duration (hrs)'] = row.get('GPX Duration (hrs)', np.nan)
+                new_row['Run Dist (mi)'] = row.get('GPX Distance (mi)', np.nan)
+                new_row['Sport'] = 'Running'
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     return df
 
 def save_master_log(df: pd.DataFrame, path: str):
