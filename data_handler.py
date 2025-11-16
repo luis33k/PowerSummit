@@ -180,7 +180,7 @@ def save_master_log(df: pd.DataFrame, path: str):
         cycling_df.to_excel(writer, sheet_name='Cycling', index=False)
 
         # Running sheet: filter rows where Sport is Running or running columns are filled
-        running_cols = ['Date', 'Phase', 'Sport', 'Location', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Carb Intake/hr', 'Sodium intra (g)']
+        running_cols = ['Date', 'Phase', 'Sport', 'Location', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Carb Intake/hr', 'Sodium intra (g)', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)']
         running_df = df[df['Sport'].str.lower().isin(['running', 'run']) | (df.get('Run Duration (hrs)').notna() if 'Run Duration (hrs)' in df.columns else False)]
         running_df = running_df[[col for col in running_cols if col in running_df.columns]].dropna(how='all')
         running_df.to_excel(writer, sheet_name='Running', index=False)

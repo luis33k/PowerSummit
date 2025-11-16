@@ -235,6 +235,13 @@ with tab7:
             session_type = st.selectbox("Session Type", ["Easy", "Zone 1", "Zone 2", "Zone 3", "Tempo", "Intervals", "Long Run"])
             carb_intake_hr = st.number_input("Carb Intake/hr", min_value=0.0, step=0.1, key="running_carb_intake_hr")
             sodium_intra = st.number_input("Sodium intra (g)", min_value=0.0, step=0.1, key="running_sodium_intra")
+            max_hr = st.number_input("Max HR", min_value=0, step=1, key="running_max_hr")
+            avg_hr = st.number_input("Avg HR", min_value=0, step=1, key="running_avg_hr")
+            z1_time = st.number_input("Z1 Time (min)", min_value=0.0, step=0.1, key="running_z1_time")
+            z2_time = st.number_input("Z2 Time (min)", min_value=0.0, step=0.1, key="running_z2_time")
+            z3_time = st.number_input("Z3 Time (min)", min_value=0.0, step=0.1, key="running_z3_time")
+            z4_time = st.number_input("Z4 Time (min)", min_value=0.0, step=0.1, key="running_z4_time")
+            z5_time = st.number_input("Z5 Time (min)", min_value=0.0, step=0.1, key="running_z5_time")
 
         if st.button("Submit Exercise"):
             date_dt = pd.to_datetime(date)
@@ -277,6 +284,13 @@ with tab7:
                 new_row['Run Session Type'] = session_type
                 new_row['Carb Intake/hr'] = carb_intake_hr
                 new_row['Sodium intra (g)'] = sodium_intra
+                new_row['Max HR'] = max_hr
+                new_row['Avg HR'] = avg_hr
+                new_row['Z1 Time (min)'] = z1_time
+                new_row['Z2 Time (min)'] = z2_time
+                new_row['Z3 Time (min)'] = z3_time
+                new_row['Z4 Time (min)'] = z4_time
+                new_row['Z5 Time (min)'] = z5_time
                 # Check for duplicate: same Date, Sport, Duration, Distance
                 duplicate_mask = (
                     (df['Date'] == new_row['Date']) &
