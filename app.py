@@ -17,6 +17,7 @@ st.set_page_config(page_title="Training Dashboard", layout="wide")
 st.sidebar.title("Controls")
 uploaded_gpx = st.sidebar.file_uploader("Upload GPX files", type="gpx", accept_multiple_files=True)
 ftp_input = st.sidebar.number_input("FTP (for GPX calculations)", min_value=0, value=200)
+gpx_sport = st.sidebar.selectbox("GPX Sport Detection", ["Auto", "Cycling", "Running"], help="Auto detects from data/track name, or override to Cycling/Running")
 date_range = st.sidebar.date_input("Date Range", [])
 show_series = st.sidebar.multiselect("Show Series", ["TSS", "TSB", "Sleep", "Carbs"], default=["TSS", "TSB"])
 
@@ -41,7 +42,8 @@ if uploaded_gpx:
         st.session_state['uploaded_files'] = current_files
     gpx_contents = st.session_state.get('gpx_contents', [])
     if gpx_contents:
-        gpx_df = load_gpx_files(gpx_contents, ftp=ftp_input)
+        sport_override = gpx_sport if gpx_sport != "Auto" else None
+        gpx_df = load_gpx_files(gpx_contents, ftp=ftp_input, sport_override=sport_override)
         df = merge_gpx_data(df, gpx_df)
         # Save updated df to Excel
         from data_handler import save_master_log
@@ -111,20 +113,45 @@ with tab3:
 
 with tab4:
     st.header("Nutrition")
-    # Daily summary of macros and weight
-    if not df.empty:
-        latest_row = df.iloc[-1]
-        st.subheader("Daily Summary")
-        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-        col1.metric("Calories", latest_row.get('Calories In', 'N/A') if pd.notna(latest_row.get('Calories In')) else 'N/A')
-        col2.metric("Protein", f"{latest_row.get('Protein (g)', 'N/A')}g" if pd.notna(latest_row.get('Protein (g)')) else 'N/A')
-        col3.metric("Carbs", f"{latest_row.get('Carbs (g)', 'N/A')}g" if pd.notna(latest_row.get('Carbs (g)')) else 'N/A')
-        col4.metric("Fat", f"{latest_row.get('Fat (g)', 'N/A')}g" if pd.notna(latest_row.get('Fat (g)')) else 'N/A')
-        col5.metric("Sodium", f"{latest_row.get('Sodium (g)', 'N/A')}g" if pd.notna(latest_row.get('Sodium (g)')) else 'N/A')
-        col6.metric("Potassium", f"{latest_row.get('Potassium (g)', 'N/A')}g" if pd.notna(latest_row.get('Potassium (g)')) else 'N/A')
-        col7.metric("Weight", f"{latest_row.get('Weight (lbs)', 'N/A')} lbs" if pd.notna(latest_row.get('Weight (lbs)')) else 'N/A')
-    else:
-        st.write("No data available.")
+    view_type = st.radio("View Type", ["Daily", "Weekly"], horizontal=True)
+
+    if view_type == "Daily":
+        selected_date = st.date_input("Select Date", value=pd.to_datetime('today'))
+        filtered_df = df[df['Date'] == pd.to_datetime(selected_date)]
+        if not filtered_df.empty:
+            # Aggregate nutrition for the day (sum if multiple entries, but typically one)
+            nutrition_agg = filtered_df[['Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)']].sum()
+            st.subheader(f"Daily Summary for {selected_date.strftime('%Y-%m-%d')}")
+            col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+            col1.metric("Calories", f"{nutrition_agg.get('Calories In', 0):.0f}" if pd.notna(nutrition_agg.get('Calories In')) else 'N/A')
+            col2.metric("Protein", f"{nutrition_agg.get('Protein (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Protein (g)')) else 'N/A')
+            col3.metric("Carbs", f"{nutrition_agg.get('Carbs (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Carbs (g)')) else 'N/A')
+            col4.metric("Fat", f"{nutrition_agg.get('Fat (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Fat (g)')) else 'N/A')
+            col5.metric("Sodium", f"{nutrition_agg.get('Sodium (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Sodium (g)')) else 'N/A')
+            col6.metric("Potassium", f"{nutrition_agg.get('Potassium (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Potassium (g)')) else 'N/A')
+            col7.metric("Weight", f"{nutrition_agg.get('Weight (lbs)', 0):.1f} lbs" if pd.notna(nutrition_agg.get('Weight (lbs)')) else 'N/A')
+        else:
+            st.write("No data for selected date.")
+
+    else:  # Weekly
+        selected_week = st.date_input("Select Week Starting", value=pd.to_datetime('today') - pd.Timedelta(days=pd.to_datetime('today').weekday()))
+        week_start = pd.to_datetime(selected_week)
+        week_end = week_start + pd.Timedelta(days=6)
+        filtered_df = df[(df['Date'] >= week_start) & (df['Date'] <= week_end)]
+        if not filtered_df.empty:
+            # Aggregate nutrition for the week (average)
+            nutrition_agg = filtered_df[['Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)']].mean()
+            st.subheader(f"Weekly Average for {week_start.strftime('%Y-%m-%d')} to {week_end.strftime('%Y-%m-%d')}")
+            col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+            col1.metric("Calories", f"{nutrition_agg.get('Calories In', 0):.0f}" if pd.notna(nutrition_agg.get('Calories In')) else 'N/A')
+            col2.metric("Protein", f"{nutrition_agg.get('Protein (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Protein (g)')) else 'N/A')
+            col3.metric("Carbs", f"{nutrition_agg.get('Carbs (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Carbs (g)')) else 'N/A')
+            col4.metric("Fat", f"{nutrition_agg.get('Fat (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Fat (g)')) else 'N/A')
+            col5.metric("Sodium", f"{nutrition_agg.get('Sodium (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Sodium (g)')) else 'N/A')
+            col6.metric("Potassium", f"{nutrition_agg.get('Potassium (g)', 0):.1f}g" if pd.notna(nutrition_agg.get('Potassium (g)')) else 'N/A')
+            col7.metric("Weight", f"{nutrition_agg.get('Weight (lbs)', 0):.1f} lbs" if pd.notna(nutrition_agg.get('Weight (lbs)')) else 'N/A')
+        else:
+            st.write("No data for selected week.")
 
 with tab5:
     st.header("Recovery")
@@ -144,7 +171,7 @@ with tab5:
 
 with tab6:
     st.header("Weekly Summary")
-    # Resample to weekly
+    # Resample to weekly using aggregated columns
     weekly_df = df.set_index('Date').resample('W').agg({
         'Total Training Hr': 'sum',
         'Cycling Duration (hrs)': 'sum',
@@ -186,6 +213,13 @@ with tab7:
             speed = st.number_input("Speed (mph)", min_value=0.0, step=0.1, key="cycling_speed")
             elevation = st.number_input("Elevation (ft)", min_value=0.0, step=0.1, key="cycling_elevation")
             avg_watt = st.number_input("Avg Watt (Est)", min_value=0, step=1, key="cycling_avg_watt")
+            max_hr = st.number_input("Max HR", min_value=0, step=1, key="cycling_max_hr")
+            avg_hr = st.number_input("Avg HR", min_value=0, step=1, key="cycling_avg_hr")
+            z1_time = st.number_input("Z1 Time (min)", min_value=0.0, step=0.1, key="cycling_z1_time")
+            z2_time = st.number_input("Z2 Time (min)", min_value=0.0, step=0.1, key="cycling_z2_time")
+            z3_time = st.number_input("Z3 Time (min)", min_value=0.0, step=0.1, key="cycling_z3_time")
+            z4_time = st.number_input("Z4 Time (min)", min_value=0.0, step=0.1, key="cycling_z4_time")
+            z5_time = st.number_input("Z5 Time (min)", min_value=0.0, step=0.1, key="cycling_z5_time")
             session_type = st.selectbox("Session Type", ["Recovery", "Zone 1", "Zone 2", "Zone 3", "Tempo", "Threshold", "VO2 Max", "Sweet Spot", "Intervals"])
             position = st.text_input("Position")
             wind = st.number_input("Wind (mph)", min_value=0.0, step=0.1, key="cycling_wind")
@@ -204,70 +238,63 @@ with tab7:
 
         if st.button("Submit Exercise"):
             date_dt = pd.to_datetime(date)
-            if date_dt in df['Date'].values:
-                # Update existing row
-                idx = df[df['Date'] == date_dt].index[0]
-                df.at[idx, 'Phase'] = phase
-                df.at[idx, 'Location'] = location
-                if activity_type == "Cycling":
-                    df.at[idx, 'Sport'] = 'Cycling'
-                    df.at[idx, 'Cycling Duration (hrs)'] = duration
-                    df.at[idx, 'Cycling Distance (mi)'] = distance
-                    df.at[idx, 'Cycling Speed (mph)'] = speed
-                    df.at[idx, 'Cycling Elevation (ft)'] = elevation
-                    df.at[idx, 'Avg Watt (Est)'] = avg_watt
-                    df.at[idx, 'Cycling Session Type'] = session_type
-                    df.at[idx, 'Position'] = position
-                    df.at[idx, 'Wind (mph)'] = wind
-                    df.at[idx, 'Temp (°F)'] = temp
-                    df.at[idx, 'Humidity (%)'] = humidity
-                    df.at[idx, 'FTP_used'] = ftp_used
-                    df.at[idx, 'Carb Intake/hr'] = carb_intake_hr
-                    df.at[idx, 'Sodium intra (g)'] = sodium_intra
-                    df.at[idx, 'Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
-                else:
-                    df.at[idx, 'Sport'] = 'Running'
-                    df.at[idx, 'Run Duration (hrs)'] = duration
-                    df.at[idx, 'Run Dist (mi)'] = distance
-                    df.at[idx, 'Run RPE'] = rpe
-                    df.at[idx, 'Run Session Type'] = session_type
-                    df.at[idx, 'Carb Intake/hr'] = carb_intake_hr
-                    df.at[idx, 'Sodium intra (g)'] = sodium_intra
-                    df.at[idx, 'Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
+            new_row = {'Date': date_dt, 'Phase': phase, 'Location': location}
+            if activity_type == "Cycling":
+                new_row['Sport'] = 'Cycling'
+                new_row['Cycling Duration (hrs)'] = duration
+                new_row['Cycling Distance (mi)'] = distance
+                new_row['Cycling Speed (mph)'] = speed
+                new_row['Cycling Elevation (ft)'] = elevation
+                new_row['Avg Watt (Est)'] = avg_watt
+                new_row['Max HR'] = max_hr
+                new_row['Avg HR'] = avg_hr
+                new_row['Z1 Time (min)'] = z1_time
+                new_row['Z2 Time (min)'] = z2_time
+                new_row['Z3 Time (min)'] = z3_time
+                new_row['Z4 Time (min)'] = z4_time
+                new_row['Z5 Time (min)'] = z5_time
+                new_row['Cycling Session Type'] = session_type
+                new_row['Position'] = position
+                new_row['Wind (mph)'] = wind
+                new_row['Temp (°F)'] = temp
+                new_row['Humidity (%)'] = humidity
+                new_row['FTP_used'] = ftp_used
+                new_row['Carb Intake/hr'] = carb_intake_hr
+                new_row['Sodium intra (g)'] = sodium_intra
+                new_row['Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
+                # Check for duplicate: same Date, Sport, Duration, Distance
+                duplicate_mask = (
+                    (df['Date'] == new_row['Date']) &
+                    (df['Sport'] == new_row['Sport']) &
+                    (df['Cycling Duration (hrs)'] == new_row['Cycling Duration (hrs)']) &
+                    (df['Cycling Distance (mi)'] == new_row['Cycling Distance (mi)'])
+                )
             else:
+                new_row['Sport'] = 'Running'
+                new_row['Run Duration (hrs)'] = duration
+                new_row['Run Dist (mi)'] = distance
+                new_row['Run RPE'] = rpe
+                new_row['Run Session Type'] = session_type
+                new_row['Carb Intake/hr'] = carb_intake_hr
+                new_row['Sodium intra (g)'] = sodium_intra
+                # Check for duplicate: same Date, Sport, Duration, Distance
+                duplicate_mask = (
+                    (df['Date'] == new_row['Date']) &
+                    (df['Sport'] == new_row['Sport']) &
+                    (df['Run Duration (hrs)'] == new_row['Run Duration (hrs)']) &
+                    (df['Run Dist (mi)'] == new_row['Run Dist (mi)'])
+                )
+
+            if not duplicate_mask.any():
                 # Append new row
-                new_row = {'Date': date_dt, 'Phase': phase, 'Location': location}
-                if activity_type == "Cycling":
-                    new_row['Sport'] = 'Cycling'
-                    new_row['Cycling Duration (hrs)'] = duration
-                    new_row['Cycling Distance (mi)'] = distance
-                    new_row['Cycling Speed (mph)'] = speed
-                    new_row['Cycling Elevation (ft)'] = elevation
-                    new_row['Avg Watt (Est)'] = avg_watt
-                    new_row['Cycling Session Type'] = session_type
-                    new_row['Position'] = position
-                    new_row['Wind (mph)'] = wind
-                    new_row['Temp (°F)'] = temp
-                    new_row['Humidity (%)'] = humidity
-                    new_row['FTP_used'] = ftp_used
-                    new_row['Carb Intake/hr'] = carb_intake_hr
-                    new_row['Sodium intra (g)'] = sodium_intra
-                    new_row['Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
-                else:
-                    new_row['Sport'] = 'Running'
-                    new_row['Run Duration (hrs)'] = duration
-                    new_row['Run Dist (mi)'] = distance
-                    new_row['Run RPE'] = rpe
-                    new_row['Run Session Type'] = session_type
-                    new_row['Carb Intake/hr'] = carb_intake_hr
-                    new_row['Sodium intra (g)'] = sodium_intra
-                    new_row['Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-            # Save to Excel
-            from data_handler import save_master_log
-            save_master_log(df, "sample_data/master_log.xlsx")
-            st.success("Exercise logged successfully!")
-            st.rerun()
+                # Save to Excel
+                from data_handler import save_master_log
+                save_master_log(df, "sample_data/master_log.xlsx")
+                st.success("Exercise logged successfully!")
+                st.rerun()
+            else:
+                st.error("Duplicate session detected. Please check your inputs.")
 
     with subtab2:
         st.subheader("Log Nutrition")

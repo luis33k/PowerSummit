@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import numpy as np
 
-def parse_gpx_file(file_content: str) -> dict:
+def parse_gpx_file(file_content: str, sport_override: str = None) -> dict:
     """
     Parse GPX content and extract workout metrics.
 
@@ -80,8 +80,66 @@ def parse_gpx_file(file_content: str) -> dict:
     avg_cadence = np.mean(cadences) if cadences else np.nan
     avg_speed = np.mean(speeds) if speeds else np.nan
 
+    # Calculate zone times (assume max HR 200, zones: Z1 <70%, Z2 70-80%, Z3 80-90%, Z4 90-100%, Z5 >100%)
+    max_hr_assumed = 200
+    z1_threshold = 0.7 * max_hr_assumed
+    z2_threshold = 0.8 * max_hr_assumed
+    z3_threshold = 0.9 * max_hr_assumed
+    z4_threshold = 1.0 * max_hr_assumed
+    # Z5 >100%
+
+    z1_time = 0
+    z2_time = 0
+    z3_time = 0
+    z4_time = 0
+    z5_time = 0
+
+    if hrs:
+        for hr in hrs:
+            if hr < z1_threshold:
+                z1_time += 1  # Assuming 1 second per point
+            elif hr < z2_threshold:
+                z2_time += 1
+            elif hr < z3_threshold:
+                z3_time += 1
+            elif hr < z4_threshold:
+                z4_time += 1
+            else:
+                z5_time += 1
+
+        # Convert to minutes
+        z1_time_min = z1_time / 60
+        z2_time_min = z2_time / 60
+        z3_time_min = z3_time / 60
+        z4_time_min = z4_time / 60
+        z5_time_min = z5_time / 60
+    else:
+        z1_time_min = z2_time_min = z3_time_min = z4_time_min = z5_time_min = np.nan
+
+    # Detect sport
+    if sport_override:
+        sport = sport_override
+    else:
+        # Detect from track name first
+        track_name = track.name.lower() if track.name else ''
+        if 'bike' in track_name or 'cycle' in track_name or 'cycling' in track_name:
+            sport = 'Cycling'
+        elif 'run' in track_name or 'running' in track_name or 'jog' in track_name:
+            sport = 'Running'
+        else:
+            # Fallback to data-based detection
+            if not pd.isna(avg_power):
+                sport = 'Cycling'
+            elif not pd.isna(avg_speed) and avg_speed > 10:
+                sport = 'Cycling'
+            elif not pd.isna(elevation_gain_ft) and elevation_gain_ft > 500:
+                sport = 'Cycling'
+            else:
+                sport = 'Running'
+
     return {
         'Date': date,
+        'Sport': sport,
         'GPX Duration (hrs)': duration_hrs,
         'GPX Distance (mi)': distance_mi,
         'GPX Elevation Gain (ft)': elevation_gain_ft,
@@ -90,7 +148,12 @@ def parse_gpx_file(file_content: str) -> dict:
         'GPX Avg Power': avg_power,
         'GPX Max Power': max_power,
         'GPX Avg Speed (mph)': avg_speed,
-        'GPX Avg Cadence': avg_cadence
+        'GPX Avg Cadence': avg_cadence,
+        'GPX Z1 Time (min)': z1_time_min,
+        'GPX Z2 Time (min)': z2_time_min,
+        'GPX Z3 Time (min)': z3_time_min,
+        'GPX Z4 Time (min)': z4_time_min,
+        'GPX Z5 Time (min)': z5_time_min
     }
 
 def compute_gpx_metrics(gpx_data: dict, ftp: float = None) -> dict:
@@ -148,13 +211,14 @@ def compute_gpx_metrics(gpx_data: dict, ftp: float = None) -> dict:
 
     return metrics
 
-def load_gpx_files(file_contents: list, ftp: float = None) -> pd.DataFrame:
+def load_gpx_files(file_contents: list, ftp: float = None, sport_override: str = None) -> pd.DataFrame:
     """
     Load multiple GPX file contents and return a DataFrame with extracted and computed metrics.
 
     Args:
         file_contents (list): List of GPX file contents as strings.
         ftp (float): FTP value for calculations.
+        sport_override (str): Override sport detection ('Cycling', 'Running', or None for auto).
 
     Returns:
         pd.DataFrame: DataFrame with GPX data.
@@ -162,7 +226,7 @@ def load_gpx_files(file_contents: list, ftp: float = None) -> pd.DataFrame:
     data = []
     for content in file_contents:
         try:
-            gpx_data = parse_gpx_file(content)
+            gpx_data = parse_gpx_file(content, sport_override)
             computed = compute_gpx_metrics(gpx_data, ftp)
             gpx_data.update(computed)
             data.append(gpx_data)

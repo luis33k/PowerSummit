@@ -15,7 +15,9 @@ def plot_tss_tsb_over_time(df: pd.DataFrame) -> go.Figure:
     """
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    fig.add_trace(go.Scatter(x=df['Date'], y=df['Total TSS (Bike + Run)'], name="Total TSS"), secondary_y=False)
+    # Select the first column if duplicates exist
+    tss_col = [col for col in df.columns if 'Total TSS (Bike + Run)' in col and not col.endswith('(7d Avg)')][0]
+    fig.add_trace(go.Scatter(x=df['Date'], y=df[tss_col], name="Total TSS"), secondary_y=False)
     fig.add_trace(go.Scatter(x=df['Date'], y=df['TSB (EWMA)'], name="TSB"), secondary_y=True)
 
     fig.update_xaxes(title_text="Date")
@@ -37,9 +39,11 @@ def plot_weekly_tss(df: pd.DataFrame) -> go.Figure:
     if not pd.api.types.is_datetime64_any_dtype(df['Date']):
         df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
     df['Week'] = df['Date'].dt.to_period('W').astype(str)
-    weekly_tss = df.groupby('Week')['Total TSS (Bike + Run)'].sum().reset_index()
+    # Select the first column if duplicates exist
+    tss_col = [col for col in df.columns if 'Total TSS (Bike + Run)' in col and not col.endswith('(7d Avg)')][0]
+    weekly_tss = df.groupby('Week')[tss_col].sum().reset_index()
 
-    fig = px.bar(weekly_tss, x='Week', y='Total TSS (Bike + Run)', title="Weekly TSS")
+    fig = px.bar(weekly_tss, x='Week', y=tss_col, title="Weekly TSS")
     return fig
 
 def plot_speed_vs_hr(df: pd.DataFrame) -> go.Figure:
@@ -77,10 +81,10 @@ def plot_small_multiples_sleep_carbs_salt(df: pd.DataFrame) -> go.Figure:
 
     if 'Sleep (hrs)' in df.columns:
         fig.add_trace(go.Scatter(x=df['Date'], y=df['Sleep (hrs)'], mode='lines'), row=1, col=1)
-    if 'Carbs' in df.columns:
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['Carbs'], mode='lines'), row=2, col=1)
-    if 'Salt' in df.columns:
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['Salt'], mode='lines'), row=3, col=1)
+    if 'Carbs (g)' in df.columns:
+        fig.add_trace(go.Scatter(x=df['Date'], y=df['Carbs (g)'], mode='lines'), row=2, col=1)
+    if 'Sodium (g)' in df.columns:
+        fig.add_trace(go.Scatter(x=df['Date'], y=df['Sodium (g)'], mode='lines'), row=3, col=1)
 
     fig.update_layout(height=600, title_text="Small Multiples: Sleep, Carbs, Salt")
     return fig
@@ -108,8 +112,11 @@ def plot_carb_hr_vs_tss(df: pd.DataFrame) -> go.Figure:
     Returns:
         go.Figure: Plotly figure.
     """
-    if 'Carb Intake/hr' in df.columns and 'Total TSS (Bike + Run)' in df.columns:
-        fig = px.scatter(df, x='Carb Intake/hr', y='Total TSS (Bike + Run)', title="Carbs/hr vs TSS")
+    # Select the first column if duplicates exist
+    carb_col = [col for col in df.columns if 'Carb Intake/hr' in col][0] if any('Carb Intake/hr' in col for col in df.columns) else None
+    tss_col = [col for col in df.columns if 'Total TSS (Bike + Run)' in col and not col.endswith('(7d Avg)')][0] if any('Total TSS (Bike + Run)' in col for col in df.columns) else None
+    if carb_col and tss_col:
+        fig = px.scatter(df, x=carb_col, y=tss_col, title="Carbs/hr vs TSS")
     else:
         fig = go.Figure()
         fig.add_annotation(text="No Carbs/hr or TSS data", showarrow=False)

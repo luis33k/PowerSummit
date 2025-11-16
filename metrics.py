@@ -120,16 +120,17 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
     Compute all metrics for the DataFrame.
 
     Adds columns for cycling, running, totals, rolling averages, fitness/fatigue.
+    Now aggregates totals per date for overview and KPIs.
 
     Args:
         df (pd.DataFrame): Input DataFrame.
 
     Returns:
-        pd.DataFrame: DataFrame with added metrics.
+        pd.DataFrame: DataFrame with added metrics and aggregated columns.
     """
     df = df.copy()
 
-    # Cycling Calculations
+    # Cycling Calculations (per session)
     if 'Cycling Duration (hrs)' in df.columns and 'Avg Watt (Est)' in df.columns:
         df['Cycling KJ'] = df['Cycling Duration (hrs)'] * df['Avg Watt (Est)'] * 3600 / 1000
         df['Cycling Calories Burned'] = df['Cycling KJ'] * 0.95
@@ -157,7 +158,7 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
         else:
             df['Cycling KJ'] = df['GPX KJ'].fillna(df['Cycling KJ'])
 
-    # Running Calculations
+    # Running Calculations (per session)
     if 'Run Duration (hrs)' in df.columns and 'Run RPE' in df.columns:
         duration_min = df['Run Duration (hrs)'] * 60
         df['Run TSS (Est)'] = (duration_min * (df['Run RPE'] ** 2)) / 30
@@ -169,65 +170,104 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
         df['Run Calories Burned'] = met * weight_kg * df['Run Duration (hrs)']
         df['Run KJ'] = df['Run Calories Burned'] * 4.184
 
-    # Totals
-    df['Total Training Hr'] = df.get('Cycling Duration (hrs)', pd.Series([0]*len(df))).fillna(0) + df.get('Run Duration (hrs)', pd.Series([0]*len(df))).fillna(0)
-    df['Total Mileage (Bike + Run)'] = df.get('Cycling Distance (mi)', pd.Series([0]*len(df))).fillna(0) + df.get('Run Dist (mi)', pd.Series([0]*len(df))).fillna(0)
-    df['Total KJ'] = df.get('Cycling KJ', pd.Series([0]*len(df))).fillna(0) + df.get('Run KJ', pd.Series([0]*len(df))).fillna(0)
-    df['Total TSS (Bike + Run)'] = df.get('Cycling TSS (Est)', pd.Series([0]*len(df))).fillna(0) + df.get('Run TSS (Est)', pd.Series([0]*len(df))).fillna(0)
+    # Aggregate totals per date
+    agg_df = df.groupby('Date').agg({
+        'Cycling Duration (hrs)': 'sum',
+        'Run Duration (hrs)': 'sum',
+        'Cycling Distance (mi)': 'sum',
+        'Run Dist (mi)': 'sum',
+        'Cycling KJ': 'sum',
+        'Run KJ': 'sum',
+        'Cycling TSS (Est)': 'sum',
+        'Run TSS (Est)': 'sum',
+        'Cycling Calories Burned': 'sum',
+        'Run Calories Burned': 'sum',
+        'Calories In': 'first',  # Assume same per date
+        'Sleep (hrs)': 'first',
+        'RHR': 'first',
+        'Weight (lbs)': 'first',
+        'Mood (1-10)': 'first',
+        'Carb Intake/hr': 'sum',  # Sum intra-session carbs
+        'Phase': 'first',
+        'Location': 'first'  # Take first location
+    }).reset_index()
 
-    # Surplus/Deficit
-    calories_burned = df.get('Cycling Calories Burned', pd.Series([0]*len(df))).fillna(0) + df.get('Run Calories Burned', pd.Series([0]*len(df))).fillna(0)
-    df['Calories Burned'] = calories_burned
-    df['Surplus/Deficit'] = df.get('Calories In', pd.Series([0]*len(df))).fillna(0) - calories_burned
+    # Rename aggregated columns for clarity
+    agg_df.rename(columns={
+        'Cycling Duration (hrs)': 'Total Cycling Hr',
+        'Run Duration (hrs)': 'Total Run Hr',
+        'Cycling Distance (mi)': 'Total Cycling Dist',
+        'Run Dist (mi)': 'Total Run Dist',
+        'Cycling KJ': 'Total Cycling KJ',
+        'Run KJ': 'Total Run KJ',
+        'Cycling TSS (Est)': 'Total Cycling TSS',
+        'Run TSS (Est)': 'Total Run TSS',
+        'Cycling Calories Burned': 'Total Cycling Calories',
+        'Run Calories Burned': 'Total Run Calories'
+    }, inplace=True)
 
-    # Watts/kg
-    if 'Avg Watt (Est)' in df.columns and 'Weight (lbs)' in df.columns:
-        weight_kg = df['Weight (lbs)'] * 0.453592
-        df['Watts/kg'] = df['Avg Watt (Est)'] / weight_kg
+    # Totals per date
+    agg_df['Total Training Hr'] = agg_df['Total Cycling Hr'].fillna(0) + agg_df['Total Run Hr'].fillna(0)
+    agg_df['Total Mileage (Bike + Run)'] = agg_df['Total Cycling Dist'].fillna(0) + agg_df['Total Run Dist'].fillna(0)
+    agg_df['Total KJ'] = agg_df['Total Cycling KJ'].fillna(0) + agg_df['Total Run KJ'].fillna(0)
+    agg_df['Total TSS (Bike + Run)'] = agg_df['Total Cycling TSS'].fillna(0) + agg_df['Total Run TSS'].fillna(0)
+    agg_df['Calories Burned'] = agg_df['Total Cycling Calories'].fillna(0) + agg_df['Total Run Calories'].fillna(0)
+    agg_df['Surplus/Deficit'] = agg_df['Calories In'].fillna(0) - agg_df['Calories Burned']
 
-    # kcal per Watt-hour
-    if 'Calories Burned' in df.columns and 'Cycling Duration (hrs)' in df.columns and 'Avg Watt (Est)' in df.columns:
-        df['kcal per Watt-hour'] = df['Calories Burned'] / (df['Avg Watt (Est)'] * df['Cycling Duration (hrs)'])
+    # Watts/kg (use average watts per date if available, but since aggregated, skip or compute separately)
+    # For simplicity, skip per-date watts/kg as it's per session
 
-    # Recovery Score: (Sleep × 0.4) + (Mood × 0.3) + (RHR variability × 0.3)
-    # For RHR variability, use rolling std of RHR over 7 days
-    if 'RHR' in df.columns:
-        df['RHR Variability'] = df.set_index('Date')['RHR'].rolling(window=7).std().reset_index(drop=True)
+    # Recovery Score per date
+    if 'RHR' in agg_df.columns:
+        agg_df['RHR Variability'] = agg_df.set_index('Date')['RHR'].rolling(window=7).std().reset_index(drop=True)
     else:
-        df['RHR Variability'] = np.nan
-    df['Recovery Score'] = (df.get('Sleep (hrs)', pd.Series([0]*len(df))).fillna(0) * 0.4) + (df.get('Mood (1-10)', pd.Series([0]*len(df))).fillna(0) * 0.3) + (df.get('RHR Variability', pd.Series([0]*len(df))).fillna(0) * 0.3)
+        agg_df['RHR Variability'] = np.nan
+    agg_df['Recovery Score'] = (agg_df.get('Sleep (hrs)', pd.Series([0]*len(agg_df))).fillna(0) * 0.4) + (agg_df.get('Mood (1-10)', pd.Series([0]*len(agg_df))).fillna(0) * 0.3) + (agg_df.get('RHR Variability', pd.Series([0]*len(agg_df))).fillna(0) * 0.3)
 
-    # Rolling Metrics (7-day averages)
-    rolling_cols = ['Avg Watt (Est)', 'Total TSS (Bike + Run)', 'Sleep (hrs)', 'Carb Intake/hr', 'Surplus/Deficit', 'Total KJ']
+    # Rolling Metrics (7-day averages) on aggregated data
+    rolling_cols = ['Total TSS (Bike + Run)', 'Sleep (hrs)', 'Carb Intake/hr', 'Surplus/Deficit', 'Total KJ']
     for col in rolling_cols:
-        if col in df.columns:
-            # Convert to numeric first
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-            df[f'{col} (7d Avg)'] = df.set_index('Date')[col].rolling(window=7).mean().reset_index(drop=True)
-            df[f'{col} (7d Avg)'] = pd.to_numeric(df[f'{col} (7d Avg)'], errors='coerce').ffill()
+        if col in agg_df.columns:
+            agg_df[col] = pd.to_numeric(agg_df[col], errors='coerce')
+            agg_df[f'{col} (7d Avg)'] = agg_df.set_index('Date')[col].rolling(window=7).mean().reset_index(drop=True)
+            agg_df[f'{col} (7d Avg)'] = pd.to_numeric(agg_df[f'{col} (7d Avg)'], errors='coerce').ffill()
 
-    # Fitness/Fatigue Formulas
-    atl, ctl, tsb = calculate_atl_ctl_tsb(df['Total TSS (Bike + Run)'])
-    df['ATL (7d EWMA)'] = atl
-    df['CTL (42d EWMA)'] = ctl
-    df['TSB (EWMA)'] = tsb
+    # Fitness/Fatigue Formulas on aggregated TSS
+    atl, ctl, tsb = calculate_atl_ctl_tsb(agg_df['Total TSS (Bike + Run)'])
+    agg_df['ATL (7d EWMA)'] = atl
+    agg_df['CTL (42d EWMA)'] = ctl
+    agg_df['TSB (EWMA)'] = tsb
 
     # Recovery Rate based on Phase
     phase_mapping = {'Build': 1.5, 'Peak': 1.5, 'Sustain': 2.0, 'Deload': 3.0}
-    df['recovery_rate'] = df.get('Phase', '').map(phase_mapping)
+    agg_df['recovery_rate'] = agg_df.get('Phase', '').map(phase_mapping)
 
     # Relative TSB Calculation
-    df['relative_tsb'] = np.nan
-    if not df.empty:
-        df.loc[0, 'relative_tsb'] = 0.0  # Initial value
-        for i in range(1, len(df)):
-            prev_relative_tsb = df.loc[i-1, 'relative_tsb']
-            current_tss = df.loc[i, 'Total TSS (Bike + Run)']
-            recovery_rate = df.loc[i, 'recovery_rate']
-            atl = df.loc[i, 'ATL (7d EWMA)']
+    agg_df['relative_tsb'] = np.nan
+    if not agg_df.empty:
+        agg_df.loc[0, 'relative_tsb'] = 0.0  # Initial value
+        for i in range(1, len(agg_df)):
+            prev_relative_tsb = agg_df.loc[i-1, 'relative_tsb']
+            current_tss = agg_df.loc[i, 'Total TSS (Bike + Run)']
+            recovery_rate = agg_df.loc[i, 'recovery_rate']
+            atl = agg_df.loc[i, 'ATL (7d EWMA)']
             if pd.notna(current_tss) and pd.notna(recovery_rate) and pd.notna(atl):
-                df.loc[i, 'relative_tsb'] = prev_relative_tsb + (current_tss * recovery_rate) - (atl / 100)
+                agg_df.loc[i, 'relative_tsb'] = prev_relative_tsb + (current_tss * recovery_rate) - (atl / 100)
             else:
-                df.loc[i, 'relative_tsb'] = prev_relative_tsb
+                agg_df.loc[i, 'relative_tsb'] = prev_relative_tsb
+
+    # Drop existing aggregated columns from df to avoid duplicates during merge
+    aggregated_keys = [col for col in agg_df.columns if col != 'Date']
+    cols_to_drop = [col for col in aggregated_keys if col in df.columns]
+    if cols_to_drop:
+        df = df.drop(columns=cols_to_drop)
+
+    # Merge aggregated columns back to original df
+    df = df.merge(agg_df[['Date'] + aggregated_keys], on='Date', how='left', suffixes=('', '_agg'))
+
+    # Rename _agg columns to final names (though with drop, should not have _agg)
+    for key in aggregated_keys:
+        if f'{key}_agg' in df.columns:
+            df.rename(columns={f'{key}_agg': key}, inplace=True)
 
     return df

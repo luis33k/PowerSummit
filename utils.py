@@ -35,6 +35,7 @@ def save_processed_data(df: pd.DataFrame, path: str):
 def get_top_kpis(df: pd.DataFrame) -> dict:
     """
     Get top KPIs: 7d TSS, CTL, ATL, latest TSB, avg sleep 7d.
+    Now aggregates by date for totals.
 
     Args:
         df (pd.DataFrame): DataFrame with metrics.
@@ -42,12 +43,42 @@ def get_top_kpis(df: pd.DataFrame) -> dict:
     Returns:
         dict: KPIs.
     """
-    latest = df.iloc[-1] if not df.empty else {}
-    kpis = {
-        '7d TSS': float(df['Total TSS (Bike + Run)'].tail(7).sum()) if not df.empty else 0.0,
-        'CTL': float(latest.get('CTL (42d EWMA)', np.nan)) if not pd.isna(latest.get('CTL (42d EWMA)', np.nan)) else 0.0,
-        'ATL': float(latest.get('ATL (7d EWMA)', np.nan)) if not pd.isna(latest.get('ATL (7d EWMA)', np.nan)) else 0.0,
-        'Latest TSB': float(latest.get('TSB (EWMA)', np.nan)) if not pd.isna(latest.get('TSB (EWMA)', np.nan)) else 0.0,
-        'Avg Sleep 7d': float(df['Sleep (hrs)'].tail(7).mean()) if not df.empty and not pd.isna(df['Sleep (hrs)'].tail(7).mean()) else 0.0
-    }
+    if df.empty:
+        return {'7d TSS': 0.0, 'CTL': 0.0, 'ATL': 0.0, 'Latest TSB': 0.0, 'Avg Sleep 7d': 0.0}
+
+    # Since data is already aggregated per date in metrics.py, just use the latest values
+    if not df.empty:
+        # Get the last row for latest values
+        latest = df.iloc[-1]
+        # Handle duplicate columns by selecting the first one
+        tss_col = [col for col in df.columns if 'Total TSS (Bike + Run)' in col][0]
+        ctl_col = [col for col in df.columns if 'CTL (42d EWMA)' in col][0]
+        atl_col = [col for col in df.columns if 'ATL (7d EWMA)' in col][0]
+        tsb_col = [col for col in df.columns if 'TSB (EWMA)' in col][0]
+        sleep_col = [col for col in df.columns if 'Sleep (hrs)' in col][0]
+
+        kpis = {
+            '7d TSS': df[tss_col].tail(7).sum(),
+            'CTL': latest[ctl_col],
+            'ATL': latest[atl_col],
+            'Latest TSB': latest[tsb_col],
+            'Avg Sleep 7d': df[sleep_col].tail(7).mean()
+        }
+        # Convert to float if needed
+        for key in kpis:
+            try:
+                if hasattr(kpis[key], 'item') and kpis[key].size == 1:
+                    kpis[key] = kpis[key].item()
+                elif isinstance(kpis[key], (int, float)):
+                    kpis[key] = float(kpis[key])
+                else:
+                    # For Series or other types, try to get a scalar
+                    if hasattr(kpis[key], 'iloc'):
+                        kpis[key] = float(kpis[key].iloc[0]) if not kpis[key].empty else 0.0
+                    else:
+                        kpis[key] = float(kpis[key]) if not pd.isna(kpis[key]) else 0.0
+            except:
+                kpis[key] = 0.0
+    else:
+        kpis = {'7d TSS': 0.0, 'CTL': 0.0, 'ATL': 0.0, 'Latest TSB': 0.0, 'Avg Sleep 7d': 0.0}
     return kpis
