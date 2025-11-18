@@ -7,6 +7,7 @@ from typing import List, Dict, Optional
 from logger import setup_logger
 
 logger = setup_logger()
+logger.info("GPX parser module initialized")
 
 def parse_gpx_file(file_content: str, sport_override: str = None) -> dict:
     """
@@ -19,6 +20,7 @@ def parse_gpx_file(file_content: str, sport_override: str = None) -> dict:
         dict: Extracted metrics including Date, Duration (hrs), Distance (mi), Elevation Gain (ft),
               Avg HR, Max HR, Avg Power, Max Power, Avg Speed (mph).
     """
+    logger.info("Parsing GPX file")
     gpx = gpxpy.parse(file_content)
 
     # Assume single track/segment
@@ -174,6 +176,7 @@ def compute_gpx_metrics(gpx_data: dict, ftp: float = None) -> dict:
     Returns:
         dict: Computed metrics.
     """
+    logger.info(f"Computing GPX metrics for date {gpx_data.get('Date')}, sport {gpx_data.get('Sport')}")
     duration = gpx_data.get('GPX Duration (hrs)', np.nan)
     avg_power = gpx_data.get('GPX Avg Power', np.nan)
     weight_kg = 70  # Default, can be passed or from DF
@@ -236,5 +239,6 @@ def load_gpx_files(file_contents: list, ftp: float = None, sport_override: str =
             gpx_data.update(computed)
             data.append(gpx_data)
         except Exception as e:
-            print(f"Error parsing GPX content: {e}")
+            logger.error(f"Error parsing GPX content: {e}")
+            continue
     return pd.DataFrame(data)

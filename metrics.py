@@ -4,6 +4,7 @@ from scipy import stats
 from logger import setup_logger
 
 logger = setup_logger()
+logger.info("Metrics module initialized")
 
 def calculate_if_cycling(avg_watt: float, ftp_used: float) -> float:
     """
@@ -22,7 +23,9 @@ def calculate_if_cycling(avg_watt: float, ftp_used: float) -> float:
     """
     if pd.isna(avg_watt) or pd.isna(ftp_used) or ftp_used == 0:
         return np.nan
-    return avg_watt / ftp_used
+    if_ = avg_watt / ftp_used
+    logger.info(f"Calculating IF for cycling: avg_watt={avg_watt}, ftp_used={ftp_used} -> IF={if_}")
+    return if_
 
 def calculate_cycling_tss(duration_hr: float, intensity_factor: float) -> float:
     """
@@ -56,7 +59,9 @@ def calculate_run_tss(duration_min: float, rpe: float) -> float:
     """
     if pd.isna(duration_min) or pd.isna(rpe):
         return np.nan
-    return (duration_min * (rpe ** 2)) / 30
+    tss = (duration_min * (rpe ** 2)) / 30
+    logger.info(f"Calculating TSS for running: duration_min={duration_min}, rpe={rpe} -> TSS={tss}")
+    return tss
 
 def calculate_total_tss(df: pd.DataFrame) -> pd.Series:
     """

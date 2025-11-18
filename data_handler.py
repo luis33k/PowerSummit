@@ -4,6 +4,7 @@ import os
 from logger import setup_logger
 
 logger = setup_logger()
+logger.info("Data handler module initialized")
 from gpx_parser import load_gpx_files
 
 def load_master_log(path: str) -> pd.DataFrame:
@@ -32,6 +33,7 @@ def load_master_log(path: str) -> pd.DataFrame:
     ]
 
     if not os.path.exists(path):
+        logger.info(f"Master log file {path} does not exist. Creating default empty DataFrame with {len(all_columns)} columns.")
         # Create default DataFrame with all necessary columns
         df = pd.DataFrame(columns=all_columns)
         # Save the empty DataFrame to create the file with multiple sheets
@@ -44,13 +46,16 @@ def load_master_log(path: str) -> pd.DataFrame:
             pd.DataFrame(columns=['Date', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)']).to_excel(writer, sheet_name='Nutrition', index=False)
             # Checkin sheet
             pd.DataFrame(columns=['Date', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes']).to_excel(writer, sheet_name='Checkin', index=False)
+        logger.info(f"Created master log file {path} with empty sheets.")
     else:
+        logger.info(f"Loading master log from {path}.")
         # Read all sheets
         sheets = pd.read_excel(path, sheet_name=None)
         cycling_df = sheets.get('Cycling', pd.DataFrame())
         running_df = sheets.get('Running', pd.DataFrame())
         nutrition_df = sheets.get('Nutrition', pd.DataFrame())
         checkin_df = sheets.get('Checkin', pd.DataFrame())
+        logger.info(f"Loaded sheets: Cycling ({len(cycling_df)} rows), Running ({len(running_df)} rows), Nutrition ({len(nutrition_df)} rows), Checkin ({len(checkin_df)} rows).")
 
         # Merge all into one df by Date
         df = pd.DataFrame()
@@ -71,6 +76,7 @@ def load_master_log(path: str) -> pd.DataFrame:
                     df[base] = df[base].combine_first(df[col])
                     cols_to_drop.append(col)
         df.drop(cols_to_drop, axis=1, inplace=True)
+        logger.info(f"After merging and combining duplicates, DataFrame has {len(df)} rows and {len(df.columns)} columns.")
 
     # Sanitize column names: strip spaces, make unique
     df.columns = df.columns.astype(str).str.strip()
@@ -93,6 +99,7 @@ def load_master_log(path: str) -> pd.DataFrame:
 
     # Drop duplicate columns, keeping only the first occurrence
     df = df.loc[:, ~df.columns.duplicated()]
+    logger.info(f"After sanitizing columns, DataFrame has {len(df.columns)} unique columns.")
 
     # Convert numeric columns to appropriate types
     numeric_cols = ['Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling TSS (Est)', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)',
@@ -101,17 +108,23 @@ def load_master_log(path: str) -> pd.DataFrame:
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+    logger.info(f"Converted {len(numeric_cols)} numeric columns to appropriate types.")
 
     # Ensure all required columns are present, fill missing with NaN
+    added_cols = 0
     for col in all_columns:
         if col not in df.columns:
             df[col] = pd.NA
+            added_cols += 1
+    logger.info(f"Added {added_cols} missing required columns.")
 
     # Parse Date column to datetime and sort
     if 'Date' in df.columns:
         df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
         df = df.sort_values('Date').reset_index(drop=True)
+        logger.info(f"Parsed Date column and sorted DataFrame by Date. Final DataFrame has {len(df)} rows.")
 
+    logger.info(f"Loaded master_log.xlsx with {len(df)} rows.")
     return df
 
 def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
@@ -129,6 +142,7 @@ def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: Merged DataFrame.
     """
     logger.info(f"Merging {len(gpx_df)} GPX rows into master DataFrame")
+    merged_count = 0
     for _, row in gpx_df.iterrows():
         new_row = {'Date': row['Date']}
         if not pd.isna(row.get('GPX Avg Power', np.nan)):
@@ -176,6 +190,8 @@ def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
         if not duplicate_mask.any():
             # Append new row
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            merged_count += 1
+    logger.info(f"Successfully merged {merged_count} new GPX rows, skipped {len(gpx_df) - merged_count} duplicates")
     return df
 
 def save_master_log(df: pd.DataFrame, path: str):

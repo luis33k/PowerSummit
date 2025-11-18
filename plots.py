@@ -5,6 +5,7 @@ import pandas as pd
 from logger import setup_logger
 
 logger = setup_logger()
+logger.info("Plots module initialized")
 
 def plot_tss_tsb_over_time(df: pd.DataFrame, show_series: list = ["TSS", "TSB"]) -> go.Figure:
     """

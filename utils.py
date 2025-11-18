@@ -3,6 +3,7 @@ import numpy as np
 from logger import setup_logger
 
 logger = setup_logger()
+logger.info("Utils module initialized")
 
 def compute_recovery_score_sleep_tsb(sleep: float, tsb: float) -> float:
     """
@@ -18,12 +19,15 @@ def compute_recovery_score_sleep_tsb(sleep: float, tsb: float) -> float:
         float: Recovery Score.
     """
     if pd.isna(sleep) or pd.isna(tsb):
+        logger.info(f"Computing recovery score: sleep={sleep}, tsb={tsb} -> NaN (missing values)")
         return np.nan
     # Normalize sleep: assume 7-9 hours optimal
     norm_sleep = min(max((sleep - 7) / 2, 0), 1)
     # Negative TSB factor: higher TSB (more fatigue) lowers score
     tsb_factor = max(0, 1 - abs(tsb) / 50)  # Arbitrary scaling
-    return (norm_sleep + tsb_factor) / 2
+    score = (norm_sleep + tsb_factor) / 2
+    logger.info(f"Computing recovery score: sleep={sleep}, tsb={tsb} -> score={score}")
+    return score
 
 def save_processed_data(df: pd.DataFrame, path: str):
     """

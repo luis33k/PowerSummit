@@ -13,13 +13,16 @@ import os
 from logger import setup_logger
 
 logger = setup_logger()
+logger.info("Application started")
 
 st.set_page_config(page_title="Training Dashboard", layout="wide")
 
 # Load data
 default_path = "sample_data/master_log.xlsx"
 os.makedirs("sample_data", exist_ok=True)
+logger.info(f"Loading master log from {default_path}")
 df = load_master_log(default_path)
+logger.info(f"Loaded DataFrame with {len(df)} rows")
 
 # Sidebar
 st.sidebar.title("Controls")
