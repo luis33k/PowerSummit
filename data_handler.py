@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import os
+from logger import setup_logger
+
+logger = setup_logger()
 from gpx_parser import load_gpx_files
 
 def load_master_log(path: str) -> pd.DataFrame:
@@ -20,7 +23,7 @@ def load_master_log(path: str) -> pd.DataFrame:
         'Date', 'Phase', 'Sport', 'Location', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes',
         'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling TSS (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)',
         'Run Duration (hrs)', 'Run Dist (mi)', 'Run TSS (Est)', 'Run Session Type', 'Run RPE',
-        'FTP_used', 'FTP_dynamic',
+        'FTP_used',
         'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Sodium intra (g)', 'Carb Intake/hr',
         'Cycling Hydration Index', 'Watts/kg', 'kcal per Watt-hour',
         'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned', 'Surplus/Deficit', 'Recovery Score',
@@ -56,7 +59,18 @@ def load_master_log(path: str) -> pd.DataFrame:
                 if df.empty:
                     df = merge_df
                 else:
-                    df = df.merge(merge_df, on='Date', how='outer')
+                    df = df.merge(merge_df, on='Date', how='outer', suffixes=('', '_y'))
+
+        # Combine duplicate columns from merge (e.g., Weight (lbs) and Weight (lbs)_y)
+        cols_to_drop = []
+        for col in df.columns:
+            if col.endswith('_y'):
+                base = col[:-2]
+                if base in df.columns:
+                    # Combine: prefer the original if not na, else the _y
+                    df[base] = df[base].combine_first(df[col])
+                    cols_to_drop.append(col)
+        df.drop(cols_to_drop, axis=1, inplace=True)
 
     # Sanitize column names: strip spaces, make unique
     df.columns = df.columns.astype(str).str.strip()
@@ -114,6 +128,7 @@ def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Merged DataFrame.
     """
+    logger.info(f"Merging {len(gpx_df)} GPX rows into master DataFrame")
     for _, row in gpx_df.iterrows():
         new_row = {'Date': row['Date']}
         if not pd.isna(row.get('GPX Avg Power', np.nan)):

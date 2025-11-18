@@ -2,27 +2,41 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
+from logger import setup_logger
 
-def plot_tss_tsb_over_time(df: pd.DataFrame) -> go.Figure:
+logger = setup_logger()
+
+def plot_tss_tsb_over_time(df: pd.DataFrame, show_series: list = ["TSS", "TSB"]) -> go.Figure:
     """
-    Line plot for TSS & TSB over time.
+    Line plot for TSS & TSB over time, conditionally based on show_series.
 
     Args:
         df (pd.DataFrame): DataFrame with Date, Total TSS, TSB.
+        show_series (list): List of series to show, e.g., ["TSS", "TSB"].
 
     Returns:
         go.Figure: Plotly figure.
     """
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    # Select the first column if duplicates exist
-    tss_col = [col for col in df.columns if 'Total TSS (Bike + Run)' in col and not col.endswith('(7d Avg)')][0]
-    fig.add_trace(go.Scatter(x=df['Date'], y=df[tss_col], name="Total TSS"), secondary_y=False)
-    fig.add_trace(go.Scatter(x=df['Date'], y=df['TSB (EWMA)'], name="TSB"), secondary_y=True)
+    has_primary = False
+    has_secondary = False
+
+    if "TSS" in show_series:
+        # Select the first column if duplicates exist
+        tss_col = [col for col in df.columns if 'Total TSS (Bike + Run)' in col and not col.endswith('(7d Avg)')][0]
+        fig.add_trace(go.Scatter(x=df['Date'], y=df[tss_col], name="Total TSS"), secondary_y=False)
+        has_primary = True
+
+    if "TSB" in show_series:
+        fig.add_trace(go.Scatter(x=df['Date'], y=df['TSB (EWMA)'], name="TSB"), secondary_y=True)
+        has_secondary = True
 
     fig.update_xaxes(title_text="Date")
-    fig.update_yaxes(title_text="TSS", secondary_y=False)
-    fig.update_yaxes(title_text="TSB", secondary_y=True)
+    if has_primary:
+        fig.update_yaxes(title_text="TSS", secondary_y=False)
+    if has_secondary:
+        fig.update_yaxes(title_text="TSB", secondary_y=True)
 
     return fig
 

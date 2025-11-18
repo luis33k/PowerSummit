@@ -2,6 +2,11 @@ import gpxpy
 import pandas as pd
 from datetime import datetime, timedelta
 import numpy as np
+import xml.etree.ElementTree as ET
+from typing import List, Dict, Optional
+from logger import setup_logger
+
+logger = setup_logger()
 
 def parse_gpx_file(file_content: str, sport_override: str = None) -> dict:
     """

@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
+from logger import setup_logger
 
-def compute_recovery_score(sleep: float, tsb: float) -> float:
+logger = setup_logger()
+
+def compute_recovery_score_sleep_tsb(sleep: float, tsb: float) -> float:
     """
     Compute Recovery Score = normalized sleep + negative TSB factor.
 

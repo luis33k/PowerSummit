@@ -7,24 +7,42 @@ from plots import (
     plot_small_multiples_sleep_carbs_salt, plot_avg_watt_over_time,
     plot_carb_hr_vs_tss, plot_sleep_trend, plot_rhr_trend
 )
-from utils import save_processed_data, get_top_kpis, compute_recovery_score
+from utils import save_processed_data, get_top_kpis, compute_recovery_score_sleep_tsb
 from gpx_parser import load_gpx_files
 import os
+from logger import setup_logger
+
+logger = setup_logger()
 
 st.set_page_config(page_title="Training Dashboard", layout="wide")
+
+# Load data
+default_path = "sample_data/master_log.xlsx"
+os.makedirs("sample_data", exist_ok=True)
+df = load_master_log(default_path)
 
 # Sidebar
 st.sidebar.title("Controls")
 uploaded_gpx = st.sidebar.file_uploader("Upload GPX files", type="gpx", accept_multiple_files=True)
 ftp_input = st.sidebar.number_input("FTP (for GPX calculations)", min_value=0, value=200)
 gpx_sport = st.sidebar.selectbox("GPX Sport Detection", ["Auto", "Cycling", "Running"], help="Auto detects from data/track name, or override to Cycling/Running")
-date_range = st.sidebar.date_input("Date Range", [])
-show_series = st.sidebar.multiselect("Show Series", ["TSS", "TSB", "Sleep", "Carbs"], default=["TSS", "TSB"])
 
-# Load data
-default_path = "sample_data/master_log.xlsx"
-os.makedirs("sample_data", exist_ok=True)
-df = load_master_log(default_path)
+# Date range selection
+date_selection_mode = st.sidebar.radio("Date Selection Mode", ["Date Range", "Week Range"], horizontal=True)
+if date_selection_mode == "Date Range":
+    start_date = st.sidebar.date_input("Start Date", value=None, key="start_date")
+    end_date = st.sidebar.date_input("End Date", value=None, key="end_date")
+    if start_date and end_date:
+        filtered_df = df[(df['Date'] >= pd.to_datetime(start_date)) & (df['Date'] <= pd.to_datetime(end_date))]
+    else:
+        filtered_df = df
+elif date_selection_mode == "Week Range":
+    week_start = st.sidebar.date_input("Week Start Date", value=pd.to_datetime('today') - pd.Timedelta(days=pd.to_datetime('today').weekday()), key="week_start")
+    week_end = pd.to_datetime(week_start) + pd.Timedelta(days=6)
+    filtered_df = df[(df['Date'] >= pd.to_datetime(week_start)) & (df['Date'] <= week_end)]
+    st.sidebar.write(f"Selected Week: {week_start.strftime('%Y-%m-%d')} to {week_end.strftime('%Y-%m-%d')}")
+
+show_series = st.sidebar.multiselect("Show Series", ["TSS", "TSB", "Sleep", "Carbs"], default=["TSS", "TSB"])
 
 # Process GPX files
 if uploaded_gpx:
@@ -62,21 +80,26 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Overview", "Cyc
 
 with tab1:
     st.header("Overview")
-    kpis = get_top_kpis(df)
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("7d TSS", f"{kpis['7d TSS']:.1f}")
-    col2.metric("CTL", f"{kpis['CTL']:.1f}")
-    col3.metric("ATL", f"{kpis['ATL']:.1f}")
-    col4.metric("Latest TSB", f"{kpis['Latest TSB']:.1f}")
-    col5.metric("Avg Sleep 7d", f"{kpis['Avg Sleep 7d']:.1f}")
+
+    kpis = get_top_kpis(filtered_df)
+    col1, col2, col3, col4, col5, col6, col7, col8, col9 = st.columns(9)
+    col1.metric("Total Hours", f"{filtered_df['Total Training Hr'].sum():.1f}")
+    col2.metric("Total Miles", f"{filtered_df['Total Mileage (Bike + Run)'].sum():.1f}")
+    col3.metric("Total TSS", f"{filtered_df['Total TSS (Bike + Run)'].sum():.1f}")
+    col4.metric("Avg Watts", f"{filtered_df['Avg Watt (Est)'].mean():.1f}")
+    col5.metric("Avg Cals Burned", f"{filtered_df['Calories Burned'].mean():.1f}")
+    col6.metric("7d TSS", f"{kpis['7d TSS']:.1f}")
+    col7.metric("CTL", f"{kpis['CTL']:.1f}")
+    col8.metric("ATL", f"{kpis['ATL']:.1f}")
+    col9.metric("Avg Sleep 7d", f"{kpis['Avg Sleep 7d']:.1f}")
 
     # Small graphs
     st.subheader("TSS & TSB Over Time")
-    fig1 = plot_tss_tsb_over_time(df)
+    fig1 = plot_tss_tsb_over_time(filtered_df, show_series)
     st.plotly_chart(fig1, width='stretch')
 
     st.subheader("Weekly TSS")
-    fig2 = plot_weekly_tss(df)
+    fig2 = plot_weekly_tss(filtered_df)
     st.plotly_chart(fig2, width='stretch')
 
 with tab2:
@@ -165,7 +188,7 @@ with tab5:
 
     # Recovery Score
     if 'TSB (EWMA)' in df.columns:
-        df['Recovery Score'] = df.apply(lambda row: compute_recovery_score(row['Sleep (hrs)'], row['TSB (EWMA)']), axis=1)
+        df['Recovery Score'] = df.apply(lambda row: compute_recovery_score_sleep_tsb(row['Sleep (hrs)'], row['TSB (EWMA)']), axis=1)
         st.subheader("Recovery Score Over Time")
         st.line_chart(df.set_index('Date')['Recovery Score'])
 

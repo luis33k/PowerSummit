@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 from scipy import stats
+from logger import setup_logger
+
+logger = setup_logger()
 
 def calculate_if_cycling(avg_watt: float, ftp_used: float) -> float:
     """
