@@ -1,1 +1,245 @@
 2025-11-18 16:15:58,826 - logger - INFO - Test log message
+2025-11-18 16:46:55,300 - logger - INFO - Data handler module initialized
+2025-11-18 16:46:55,339 - logger - INFO - GPX parser module initialized
+2025-11-18 16:46:55,986 - logger - INFO - Metrics module initialized
+2025-11-18 16:46:56,062 - logger - INFO - Plots module initialized
+2025-11-18 16:46:56,066 - logger - INFO - Utils module initialized
+2025-11-18 16:46:56,067 - logger - INFO - Application started
+2025-11-18 16:46:56,068 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:46:56,069 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:46:56,244 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:46:56,251 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:46:56,252 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:46:56,256 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:46:56,261 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:46:56,263 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:46:56,263 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:46:56,263 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:46:56,925 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:15,550 - logger - INFO - Application started
+2025-11-18 16:47:15,551 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:15,551 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:15,564 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:15,568 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:15,569 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:15,572 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:15,577 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:15,579 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:15,579 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:15,580 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:15,734 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:18,213 - logger - INFO - Application started
+2025-11-18 16:47:18,213 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:18,214 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:18,226 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:18,230 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:18,231 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:18,235 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:18,239 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:18,241 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:18,241 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:18,241 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:18,391 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:20,810 - logger - INFO - Application started
+2025-11-18 16:47:20,811 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:20,811 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:20,824 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:20,829 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:20,830 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:20,833 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:20,836 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:20,838 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:20,838 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:20,839 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:20,984 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:21,978 - logger - INFO - Application started
+2025-11-18 16:47:21,979 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:21,979 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:21,990 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:21,994 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:21,995 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:21,998 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:22,001 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:22,002 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:22,003 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:22,003 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:22,134 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:25,685 - logger - INFO - Application started
+2025-11-18 16:47:25,686 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:25,686 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:25,697 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:25,701 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:25,702 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:25,706 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:25,713 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:25,715 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:25,715 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:25,715 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:25,878 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:26,577 - logger - INFO - Application started
+2025-11-18 16:47:26,578 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:26,578 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:26,591 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:26,594 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:26,595 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:26,598 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:26,602 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:26,603 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:26,603 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:26,603 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:26,751 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:27,673 - logger - INFO - Application started
+2025-11-18 16:47:27,674 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:27,674 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:27,684 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:27,688 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:27,689 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:27,692 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:27,698 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:27,699 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:27,699 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:27,700 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:27,845 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:28,416 - logger - INFO - Application started
+2025-11-18 16:47:28,418 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:28,418 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:28,429 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:28,432 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:28,433 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:28,436 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:28,440 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:28,442 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:28,442 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:28,443 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:28,585 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:29,009 - logger - INFO - Application started
+2025-11-18 16:47:29,010 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:29,010 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:29,021 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:29,024 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:29,025 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:29,028 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:29,032 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:29,033 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:29,033 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:29,034 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:29,166 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:29,833 - logger - INFO - Application started
+2025-11-18 16:47:29,834 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:29,834 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:29,845 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:29,848 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:29,849 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:29,852 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:29,856 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:29,858 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:29,858 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:29,858 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:30,001 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:30,925 - logger - INFO - Application started
+2025-11-18 16:47:30,926 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:30,926 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:30,937 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:30,940 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:30,941 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:30,944 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:30,948 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:30,949 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:30,949 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:30,950 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:31,076 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:33,380 - logger - INFO - Application started
+2025-11-18 16:47:33,381 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:33,381 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:33,394 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:33,397 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:33,398 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:33,401 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:33,405 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:33,407 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:33,407 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:33,408 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:33,558 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:35,748 - logger - INFO - Application started
+2025-11-18 16:47:35,748 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:35,749 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:35,760 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:35,764 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:35,765 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:35,768 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:35,772 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:35,774 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:35,775 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:35,775 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:35,920 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:37,523 - logger - INFO - Application started
+2025-11-18 16:47:37,524 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:37,524 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:37,536 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:37,540 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:37,541 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:37,545 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:37,548 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:37,550 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:37,550 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:37,550 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:37,701 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:38,264 - logger - INFO - Application started
+2025-11-18 16:47:38,265 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:38,265 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:38,278 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:38,281 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:38,282 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:38,285 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:38,289 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:38,291 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:38,291 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:38,292 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:38,394 - logger - INFO - Application started
+2025-11-18 16:47:38,452 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:38,453 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:38,465 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:38,469 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:38,470 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:38,473 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:38,479 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:38,480 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:38,481 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:38,481 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:38,628 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:39,601 - logger - INFO - Application started
+2025-11-18 16:47:39,602 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:39,602 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:39,614 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:39,618 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:39,619 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:39,621 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:39,625 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:39,627 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:39,627 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:39,628 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:39,771 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:41,741 - logger - INFO - Application started
+2025-11-18 16:47:41,741 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:41,742 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:41,755 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:41,760 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:41,761 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:41,764 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:41,768 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:41,769 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:41,769 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:41,770 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:41,936 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-18 16:47:43,064 - logger - INFO - Application started
+2025-11-18 16:47:43,065 - logger - INFO - Loading master log from sample_data/master_log.xlsx
+2025-11-18 16:47:43,065 - logger - INFO - Loading master log from sample_data/master_log.xlsx.
+2025-11-18 16:47:43,082 - logger - INFO - Loaded sheets: Cycling (1 rows), Running (0 rows), Nutrition (1 rows), Checkin (1 rows).
+2025-11-18 16:47:43,086 - logger - INFO - After merging and combining duplicates, DataFrame has 1 rows and 41 columns.
+2025-11-18 16:47:43,086 - logger - INFO - After sanitizing columns, DataFrame has 41 unique columns.
+2025-11-18 16:47:43,090 - logger - INFO - Converted 32 numeric columns to appropriate types.
+2025-11-18 16:47:43,095 - logger - INFO - Added 24 missing required columns.
+2025-11-18 16:47:43,097 - logger - INFO - Parsed Date column and sorted DataFrame by Date. Final DataFrame has 1 rows.
+2025-11-18 16:47:43,097 - logger - INFO - Loaded master_log.xlsx with 1 rows.
+2025-11-18 16:47:43,098 - logger - INFO - Loaded DataFrame with 1 rows
+2025-11-18 16:47:43,254 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
