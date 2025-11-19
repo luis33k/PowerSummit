@@ -57,26 +57,14 @@ def load_master_log(path: str) -> pd.DataFrame:
         checkin_df = sheets.get('Checkin', pd.DataFrame())
         logger.info(f"Loaded sheets: Cycling ({len(cycling_df)} rows), Running ({len(running_df)} rows), Nutrition ({len(nutrition_df)} rows), Checkin ({len(checkin_df)} rows).")
 
-        # Merge all into one df by Date
-        df = pd.DataFrame()
-        for merge_df in [cycling_df, running_df, nutrition_df, checkin_df]:
-            if not merge_df.empty:
-                if df.empty:
-                    df = merge_df
-                else:
-                    df = df.merge(merge_df, on='Date', how='outer', suffixes=('', '_y'))
-
-        # Combine duplicate columns from merge (e.g., Weight (lbs) and Weight (lbs)_y)
-        cols_to_drop = []
-        for col in df.columns:
-            if col.endswith('_y'):
-                base = col[:-2]
-                if base in df.columns:
-                    # Combine: prefer the original if not na, else the _y
-                    df[base] = df[base].combine_first(df[col])
-                    cols_to_drop.append(col)
-        df.drop(cols_to_drop, axis=1, inplace=True)
-        logger.info(f"After merging and combining duplicates, DataFrame has {len(df)} rows and {len(df.columns)} columns.")
+        # Concatenate all sheets vertically to avoid Cartesian product explosion
+        df_list = [cycling_df, running_df, nutrition_df, checkin_df]
+        df_list = [df for df in df_list if not df.empty]
+        if df_list:
+            df = pd.concat(df_list, ignore_index=True, sort=False)
+        else:
+            df = pd.DataFrame()
+        logger.info(f"After concatenating sheets, DataFrame has {len(df)} rows and {len(df.columns)} columns.")
 
     # Sanitize column names: strip spaces, make unique
     df.columns = df.columns.astype(str).str.strip()
@@ -101,14 +89,14 @@ def load_master_log(path: str) -> pd.DataFrame:
     df = df.loc[:, ~df.columns.duplicated()]
     logger.info(f"After sanitizing columns, DataFrame has {len(df.columns)} unique columns.")
 
-    # Convert numeric columns to appropriate types
+    # Convert numeric columns to appropriate types and optimize memory
     numeric_cols = ['Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling TSS (Est)', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)',
                     'Run Duration (hrs)', 'Run Dist (mi)', 'Run TSS (Est)', 'Run RPE', 'FTP_used', 'FTP_dynamic', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Sodium intra (g)', 'Carb Intake/hr', 'Cycling Hydration Index',
-                    'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)']
+                    'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)']
     for col in numeric_cols:
         if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-    logger.info(f"Converted {len(numeric_cols)} numeric columns to appropriate types.")
+            df[col] = pd.to_numeric(df[col], errors='coerce').astype('float32')
+    logger.info(f"Converted {len(numeric_cols)} numeric columns to float32 to optimize memory.")
 
     # Ensure all required columns are present, fill missing with NaN
     added_cols = 0

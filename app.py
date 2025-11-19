@@ -85,16 +85,16 @@ with tab1:
     st.header("Overview")
 
     kpis = get_top_kpis(filtered_df)
-    col1, col2, col3, col4, col5, col6, col7, col8, col9 = st.columns(9)
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     col1.metric("Total Hours", f"{filtered_df['Total Training Hr'].sum():.1f}")
     col2.metric("Total Miles", f"{filtered_df['Total Mileage (Bike + Run)'].sum():.1f}")
     col3.metric("Total TSS", f"{filtered_df['Total TSS (Bike + Run)'].sum():.1f}")
     col4.metric("Avg Watts", f"{filtered_df['Avg Watt (Est)'].mean():.1f}")
-    col5.metric("Avg Cals Burned", f"{filtered_df['Calories Burned'].mean():.1f}")
-    col6.metric("7d TSS", f"{kpis['7d TSS']:.1f}")
-    col7.metric("CTL", f"{kpis['CTL']:.1f}")
-    col8.metric("ATL", f"{kpis['ATL']:.1f}")
-    col9.metric("Avg Sleep 7d", f"{kpis['Avg Sleep 7d']:.1f}")
+    # col5.metric("Avg Cals Burned", f"{filtered_df['Calories Burned'].mean():.1f}")
+    # col6.metric("7d TSS", f"{kpis['7d TSS']:.1f}")
+    col5.metric("CTL", f"{kpis['CTL']:.1f}")
+    col6.metric("ATL", f"{kpis['ATL']:.1f}")
+    col7.metric("Avg Sleep 7d", f"{kpis['Avg Sleep 7d']:.1f}")
 
     # Small graphs
     st.subheader("TSS & TSB Over Time")

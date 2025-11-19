@@ -1,8 +1,12 @@
-- [ ] Update requirements.txt to include gpxpy, pandas, numpy, streamlit, plotly, matplotlib, openpyxl, scipy.
-- [ ] Create gpx_parser.py: functions to parse GPX files, extract Date, Duration, Distance, Elevation Gain, Avg/Max HR, Avg/Max Power, Speed; compute cycling IF (Avg Power / FTP), TSS (Duration * IF^2 * 100), KJ (Duration * Avg Power * 3600 / 1000), Watts/kg; handle running if HR data available.
-- [ ] Update data_handler.py: add function to load GPX files, extract data using gpx_parser, merge into master DF by Date.
-- [x] Update metrics.py: modify compute_all_metrics to use GPX-derived columns for calculations, ensure TSB = CTL - ATL, update rolling averages, EWMA, etc.
-- [ ] Update app.py: add GPX file uploader in sidebar (multiple files), process and merge GPX data; add overview cards (Total Training Hours all-time/weekly, Total Miles all-time/weekly, Cycling vs Running Miles, Avg Sleep, Avg Calories In/Burned, Avg Watt, Avg Elevation Gain, Latest TSB); update weekly summary tab with resample('W').agg(); add test tab to load sample GPX + logs and verify calculations.
-- [ ] Update plots.py: ensure all plots are interactive Plotly; add new plots if needed (e.g., elevation over time, calories in vs burned, carb intake per ride).
-- [ ] Update utils.py: enhance get_top_kpis with new metrics (total hrs/miles, etc.).
-- [ ] Install dependencies and test app with GPX uploads, verify metrics, UI, and test tab.
+# TODO: Fix Memory Error in load_master_log
+
+## Tasks
+- [ ] Modify load_master_log in data_handler.py to use pd.concat instead of outer merge to prevent Cartesian product explosion.
+- [ ] Optimize data types: Convert numeric columns to float32/int32 after loading sheets to reduce memory usage.
+- [ ] Test the fix by running the app and checking for memory issues.
+- [ ] Ensure no random sessions are created and no infinite loops occur.
+
+## Notes
+- The outer merge was causing row multiplication when multiple sheets had rows for the same date.
+- pd.concat will stack DataFrames vertically, preserving separate rows.
+- Data type optimization should help with large arrays.
