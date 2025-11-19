@@ -44,5 +44,6 @@ This system expands on my current Excel pipeline and aims to:
 git clone https://github.com/luis33k/PowerSummit.git
 cd training-dashboard
 
+---
 © 2025 Luis G. All Rights Reserved.
 No part of this repository may be copied, reproduced, distributed, or modified without explicit written permission.
