@@ -1,35 +1,45 @@
-# Training Dashboard
+# Training Dashboard / Athlete Analytics Dashboard
 
-A Streamlit web app for analyzing training data in a TrainingPeaks-style dashboard.
+A Streamlit web app for analyzing endurance training data, inspired by TrainingPeaks-style dashboards. This project extends my Excel-based workflow into a scalable analytics platform with advanced metrics, GPX parsing, and interactive visualizations.
 
-## Features
+---
 
-- Load master Excel file with training logs
-- Calculate cycling and running TSS, IF, ATL, CTL, TSB
-- Visualize trends with Plotly charts
-- Modular code structure
+## 📌 Project Goal
 
-## Installation
+The goal is to build a fully modular **Python training analytics system** that eventually becomes a deployable web platform for athletes.  
+This system expands on my current Excel pipeline and aims to:
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+- Parse **GPX files** (Garmin/Strava style)
+- Compute reliable **cycling & running TSS, TSB, IF, KJ, Watts/kg**, HR/power zone metrics
+- Track **sleep, recovery, carbs, sodium intake**
+- Generate **interactive trending graphs** for performance and fatigue
+- Mimic TrainingPeaks metrics while remaining fully local and customizable
+- Evolve into a **public web dashboard / SaaS tool**
 
-2. Run the app:
-   ```bash
-   streamlit run app.py
-   ```
+---
 
-## File Structure
+## 🚀 Features
 
-- `app.py`: Main Streamlit application
-- `data_handler.py`: Data loading and preprocessing
-- `metrics.py`: Calculation of training metrics
-- `plots.py`: Plotly chart functions
-- `utils.py`: Utility functions
-- `sample_data/master_log.xlsx`: Sample data file
+- Load **master Excel logs**
+- Parse **GPX ride/run files**
+- Compute:
+  - TSS, IF, NP
+  - KJ & calorie burn
+  - Watts/kg
+  - Running TSS (pace‑based)
+- Recovery scoring using **sleep + TSB**
+- Plotly visualizations:
+  - TSS/CTL/ATL/TSB charts
+  - Sleep trends
+  - Carbs & sodium intake patterns
+  - Power, speed, HR analysis
+- Modular structure for advanced expansion
 
-## Sample Data
+---
 
-The sample `master_log.xlsx` contains 14 rows of mixed cycling and running data with columns like Date, Activity Type, Duration, Avg Watt, FTP Used, RPE, Sleep, Carbs, etc.
+## 🛠️ Installation
+
+1. Clone the repo:
+```bash
+git clone https://github.com/luis33k/PowerSummit.git
+cd training-dashboard
