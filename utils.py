@@ -57,19 +57,19 @@ def get_top_kpis(df: pd.DataFrame) -> dict:
     if not df.empty:
         # Get the last row for latest values
         latest = df.iloc[-1]
-        # Handle duplicate columns by selecting the first one
-        tss_col = [col for col in df.columns if 'Total TSS (Bike + Run)' in col][0]
-        ctl_col = [col for col in df.columns if 'CTL (42d EWMA)' in col][0]
-        atl_col = [col for col in df.columns if 'ATL (7d EWMA)' in col][0]
-        tsb_col = [col for col in df.columns if 'TSB (EWMA)' in col][0]
-        sleep_col = [col for col in df.columns if 'Sleep (hrs)' in col][0]
+        # Handle duplicate columns by selecting the first one, or None if not found
+        tss_col = next((col for col in df.columns if 'Total TSS (Bike + Run)' in col), None)
+        ctl_col = next((col for col in df.columns if 'CTL (EWMA)' in col), None)
+        atl_col = next((col for col in df.columns if 'ATL (EWMA)' in col), None)
+        tsb_col = next((col for col in df.columns if 'TSB (EWMA)' in col), None)
+        sleep_col = next((col for col in df.columns if 'Sleep (hrs)' in col), None)
 
         kpis = {
-            '7d TSS': df[tss_col].tail(7).sum(),
-            'CTL': latest[ctl_col],
-            'ATL': latest[atl_col],
-            'Latest TSB': latest[tsb_col],
-            'Avg Sleep 7d': df[sleep_col].tail(7).mean()
+            '7d TSS': df[tss_col].tail(7).sum() if tss_col else 0.0,
+            'CTL': latest[ctl_col] if ctl_col else 0.0,
+            'ATL': latest[atl_col] if atl_col else 0.0,
+            'Latest TSB': latest[tsb_col] if tsb_col else 0.0,
+            'Avg Sleep 7d': df[sleep_col].tail(7).mean() if sleep_col else 0.0
         }
         # Convert to float if needed
         for key in kpis:

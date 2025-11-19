@@ -7,113 +7,83 @@ logger = setup_logger()
 logger.info("Data handler module initialized")
 from gpx_parser import load_gpx_files
 
-def load_master_log(path: str) -> pd.DataFrame:
+def load_master_log(path: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
-    Load the master log Excel file into a pandas DataFrame.
-    Reads multiple sheets (Cycling, Running, Nutrition, Checkin), merges them by Date into one master DataFrame with all Daily Master Log columns.
-    If the file does not exist, create a default empty DataFrame with all necessary columns.
+    Load the master log Excel file into separate DataFrames for training, nutrition, and checkin.
+    Reads multiple sheets (Training, Nutrition, Checkin).
+    If the file does not exist, create default empty DataFrames.
 
     Args:
         path (str): Path to the Excel file.
 
     Returns:
-        pd.DataFrame: Loaded and processed DataFrame with sanitized columns and sorted by Date.
+        tuple: (training_df, nutrition_df, checkin_df) - Separate DataFrames for each log type.
     """
-    # All required columns for Daily Master Log
-    all_columns = [
-        'Date', 'Phase', 'Sport', 'Location', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes',
-        'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling TSS (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)',
-        'Run Duration (hrs)', 'Run Dist (mi)', 'Run TSS (Est)', 'Run Session Type', 'Run RPE',
-        'FTP_used',
-        'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Sodium intra (g)', 'Carb Intake/hr',
-        'Cycling Hydration Index', 'Watts/kg', 'kcal per Watt-hour',
-        'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned', 'Surplus/Deficit', 'Recovery Score',
-        'Avg Watt (7d Avg)', 'TSS (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'KJ (7d avg)', 'Sleep (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)',
-        'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)'
-    ]
+    training_cols = ['Date', 'Phase', 'Sport', 'Location', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned']
+    nutrition_cols = ['Date', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)', 'Surplus/Deficit']
+    checkin_cols = ['Date', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'TSB (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)']
 
     if not os.path.exists(path):
-        logger.info(f"Master log file {path} does not exist. Creating default empty DataFrame with {len(all_columns)} columns.")
-        # Create default DataFrame with all necessary columns
-        df = pd.DataFrame(columns=all_columns)
-        # Save the empty DataFrame to create the file with multiple sheets
+        logger.info(f"Master log file {path} does not exist. Creating default empty DataFrames.")
+        # Create default empty DataFrames
+        training_df = pd.DataFrame(columns=training_cols)
+        nutrition_df = pd.DataFrame(columns=nutrition_cols)
+        checkin_df = pd.DataFrame(columns=checkin_cols)
+        # Save the empty DataFrames to create the file with multiple sheets
         with pd.ExcelWriter(path) as writer:
-            # Cycling sheet
-            pd.DataFrame(columns=['Date', 'Phase', 'Sport', 'Location', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)']).to_excel(writer, sheet_name='Cycling', index=False)
-            # Running sheet
-            pd.DataFrame(columns=['Date', 'Phase', 'Sport', 'Location', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Carb Intake/hr', 'Sodium intra (g)']).to_excel(writer, sheet_name='Running', index=False)
-            # Nutrition sheet
-            pd.DataFrame(columns=['Date', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)']).to_excel(writer, sheet_name='Nutrition', index=False)
-            # Checkin sheet
-            pd.DataFrame(columns=['Date', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes']).to_excel(writer, sheet_name='Checkin', index=False)
+            training_df.to_excel(writer, sheet_name='Training', index=False)
+            nutrition_df.to_excel(writer, sheet_name='Nutrition', index=False)
+            checkin_df.to_excel(writer, sheet_name='Checkin', index=False)
         logger.info(f"Created master log file {path} with empty sheets.")
     else:
         logger.info(f"Loading master log from {path}.")
-        # Read all sheets
-        sheets = pd.read_excel(path, sheet_name=None)
-        cycling_df = sheets.get('Cycling', pd.DataFrame())
-        running_df = sheets.get('Running', pd.DataFrame())
+        try:
+            sheets = pd.read_excel(path, sheet_name=None)
+        except Exception as e:
+            logger.warning(f"Failed to load master log from {path}: {e}. Recreating empty file.")
+            training_df = pd.DataFrame(columns=training_cols)
+            nutrition_df = pd.DataFrame(columns=nutrition_cols)
+            checkin_df = pd.DataFrame(columns=checkin_cols)
+            with pd.ExcelWriter(path) as writer:
+                training_df.to_excel(writer, sheet_name='Training', index=False)
+                nutrition_df.to_excel(writer, sheet_name='Nutrition', index=False)
+                checkin_df.to_excel(writer, sheet_name='Checkin', index=False)
+            logger.info(f"Recreated master log file {path} with empty sheets.")
+            sheets = {}
+        if 'Training' in sheets:
+            training_df = sheets.get('Training', pd.DataFrame())
+        else:
+            # Backward compatibility: combine Cycling and Running sheets
+            cycling_df = sheets.get('Cycling', pd.DataFrame())
+            running_df = sheets.get('Running', pd.DataFrame())
+            training_df = pd.concat([cycling_df, running_df], ignore_index=True)
         nutrition_df = sheets.get('Nutrition', pd.DataFrame())
         checkin_df = sheets.get('Checkin', pd.DataFrame())
-        logger.info(f"Loaded sheets: Cycling ({len(cycling_df)} rows), Running ({len(running_df)} rows), Nutrition ({len(nutrition_df)} rows), Checkin ({len(checkin_df)} rows).")
+        logger.info(f"Loaded sheets: Training ({len(training_df)} rows), Nutrition ({len(nutrition_df)} rows), Checkin ({len(checkin_df)} rows).")
 
-        # Concatenate all sheets vertically to avoid Cartesian product explosion
-        df_list = [cycling_df, running_df, nutrition_df, checkin_df]
-        df_list = [df for df in df_list if not df.empty]
-        if df_list:
-            df = pd.concat(df_list, ignore_index=True, sort=False)
-        else:
-            df = pd.DataFrame()
-        logger.info(f"After concatenating sheets, DataFrame has {len(df)} rows and {len(df.columns)} columns.")
+        # Ensure all expected columns are present
+        training_df = training_df.reindex(columns=training_cols, fill_value=np.nan)
+        nutrition_df = nutrition_df.reindex(columns=nutrition_cols, fill_value=np.nan)
+        checkin_df = checkin_df.reindex(columns=checkin_cols, fill_value=np.nan)
 
-    # Sanitize column names: strip spaces, make unique
-    df.columns = df.columns.astype(str).str.strip()
-    # Make column names unique by appending suffix if duplicates
-    seen = set()
-    new_cols = []
-    for col in df.columns:
-        if col in seen:
-            suffix = 1
-            new_col = f"{col}_{suffix}"
-            while new_col in seen:
-                suffix += 1
-                new_col = f"{col}_{suffix}"
-            new_cols.append(new_col)
-            seen.add(new_col)
-        else:
-            new_cols.append(col)
-            seen.add(col)
-    df.columns = new_cols
+    # Sanitize and convert for each df
+    for df_name, df in [('Training', training_df), ('Nutrition', nutrition_df), ('Checkin', checkin_df)]:
+        df.columns = df.columns.astype(str).str.strip()
+        df = df.loc[:, ~df.columns.duplicated()]
+        numeric_cols = {
+            'Training': ['Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned'],
+            'Nutrition': ['Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)', 'Surplus/Deficit'],
+            'Checkin': ['Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'TSS (EWMA)', 'TSB (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)']
+        }
+        for col in numeric_cols[df_name]:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce').astype('float32')
+        if 'Date' in df.columns:
+            df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+            df = df.sort_values('Date').reset_index(drop=True)
 
-    # Drop duplicate columns, keeping only the first occurrence
-    df = df.loc[:, ~df.columns.duplicated()]
-    logger.info(f"After sanitizing columns, DataFrame has {len(df.columns)} unique columns.")
-
-    # Convert numeric columns to appropriate types and optimize memory
-    numeric_cols = ['Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling TSS (Est)', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)',
-                    'Run Duration (hrs)', 'Run Dist (mi)', 'Run TSS (Est)', 'Run RPE', 'FTP_used', 'FTP_dynamic', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Sodium intra (g)', 'Carb Intake/hr', 'Cycling Hydration Index',
-                    'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)']
-    for col in numeric_cols:
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors='coerce').astype('float32')
-    logger.info(f"Converted {len(numeric_cols)} numeric columns to float32 to optimize memory.")
-
-    # Ensure all required columns are present, fill missing with NaN
-    added_cols = 0
-    for col in all_columns:
-        if col not in df.columns:
-            df[col] = pd.NA
-            added_cols += 1
-    logger.info(f"Added {added_cols} missing required columns.")
-
-    # Parse Date column to datetime and sort
-    if 'Date' in df.columns:
-        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-        df = df.sort_values('Date').reset_index(drop=True)
-        logger.info(f"Parsed Date column and sorted DataFrame by Date. Final DataFrame has {len(df)} rows.")
-
-    logger.info(f"Loaded master_log.xlsx with {len(df)} rows.")
-    return df
+    logger.info(f"Loaded master log with Training: {len(training_df)} rows, Nutrition: {len(nutrition_df)} rows, Checkin: {len(checkin_df)} rows.")
+    return training_df, nutrition_df, checkin_df
 
 def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -184,32 +154,27 @@ def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
 
 def save_master_log(df: pd.DataFrame, path: str):
     """
-    Save the master log DataFrame to an Excel file.
-    Saves data to separate sheets: Cycling, Running, Nutrition, Checkin.
+    Save the master log DataFrame to an Excel file with separate sheets for Training, Nutrition, Checkin.
 
     Args:
-        df (pd.DataFrame): DataFrame to save.
+        df (pd.DataFrame): Combined DataFrame to split and save.
         path (str): Path to the Excel file.
     """
+    # Split df into separate sheets
+    # Training: rows with Sport or cycling/running columns filled
+    training_cols = ['Date', 'Phase', 'Sport', 'Location', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned']
+    training_mask = df['Sport'].notna() | df[['Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Run Duration (hrs)', 'Run Dist (mi)']].notna().any(axis=1)
+    training_df = df[training_mask][training_cols].dropna(how='all')
+
+    # Nutrition: rows with nutrition columns filled
+    nutrition_cols = ['Date', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)']
+    nutrition_df = df[nutrition_cols].dropna(how='all')
+
+    # Checkin: rows with checkin columns filled
+    checkin_cols = ['Date', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes']
+    checkin_df = df[checkin_cols].dropna(how='all')
+
     with pd.ExcelWriter(path, engine='openpyxl') as writer:
-        # Cycling sheet: filter rows where Sport is Cycling or cycling columns are filled
-        cycling_cols = ['Date', 'Phase', 'Sport', 'Location', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)']
-        cycling_df = df[df['Sport'].str.lower().isin(['cycling', 'bike']) | df['Cycling Duration (hrs)'].notna()]
-        cycling_df = cycling_df[[col for col in cycling_cols if col in cycling_df.columns]].dropna(how='all')
-        cycling_df.to_excel(writer, sheet_name='Cycling', index=False)
-
-        # Running sheet: filter rows where Sport is Running or running columns are filled
-        running_cols = ['Date', 'Phase', 'Sport', 'Location', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Carb Intake/hr', 'Sodium intra (g)', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)']
-        running_df = df[df['Sport'].str.lower().isin(['running', 'run']) | (df.get('Run Duration (hrs)').notna() if 'Run Duration (hrs)' in df.columns else False)]
-        running_df = running_df[[col for col in running_cols if col in running_df.columns]].dropna(how='all')
-        running_df.to_excel(writer, sheet_name='Running', index=False)
-
-        # Nutrition sheet: filter rows with nutrition data
-        nutrition_cols = ['Date', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)']
-        nutrition_df = df[[col for col in nutrition_cols if col in df.columns]].dropna(how='all')
+        training_df.to_excel(writer, sheet_name='Training', index=False)
         nutrition_df.to_excel(writer, sheet_name='Nutrition', index=False)
-
-        # Checkin sheet: filter rows with checkin data
-        checkin_cols = ['Date', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes']
-        checkin_df = df[[col for col in checkin_cols if col in df.columns]].dropna(how='all')
         checkin_df.to_excel(writer, sheet_name='Checkin', index=False)

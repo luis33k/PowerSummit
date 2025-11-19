@@ -178,6 +178,10 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
         df['Run Calories Burned'] = met * weight_kg * df['Run Duration (hrs)']
         df['Run KJ'] = df['Run Calories Burned'] * 4.184
 
+    # Fill NaN TSS with 0 to ensure sums work
+    df['Cycling TSS (Est)'] = df['Cycling TSS (Est)'].fillna(0)
+    df['Run TSS (Est)'] = df['Run TSS (Est)'].fillna(0)
+
     # Aggregate totals per date
     agg_df = df.groupby('Date').agg({
         'Cycling Duration (hrs)': 'sum',

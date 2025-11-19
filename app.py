@@ -18,11 +18,16 @@ logger.info("Application started")
 st.set_page_config(page_title="Training Dashboard", layout="wide")
 
 # Load data
-default_path = "sample_data/master_log.xlsx"
-os.makedirs("sample_data", exist_ok=True)
+default_path = "data/master_log.xlsx"
+os.makedirs("data", exist_ok=True)
 logger.info(f"Loading master log from {default_path}")
-df = load_master_log(default_path)
-logger.info(f"Loaded DataFrame with {len(df)} rows")
+training_df, nutrition_df, checkin_df = load_master_log(default_path)
+logger.info(f"Loaded Training: {len(training_df)} rows, Nutrition: {len(nutrition_df)} rows, Checkin: {len(checkin_df)} rows")
+
+# Combine for metrics and display
+df = pd.concat([training_df, nutrition_df, checkin_df], ignore_index=True)
+df['Date'] = pd.to_datetime(df['Date'])
+logger.info(f"Combined DataFrame with {len(df)} rows")
 
 # Sidebar
 st.sidebar.title("Controls")
@@ -74,23 +79,29 @@ if uploaded_gpx:
 # Compute metrics
 df = compute_all_metrics(df)
 
+# Save computed DataFrame back to Excel so computed columns are visible
+from data_handler import save_master_log
+save_master_log(df, default_path)
+
 # Save processed data
 os.makedirs("outputs", exist_ok=True)
 save_processed_data(df, "outputs/processed_master.csv")
 
 # Tabs
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Weekly Summary", "Data Entry", "GPX Phraser", "Data Editor"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Overview", "Cycling", "Running", "Nutrition", "Recovery", "Weekly Summary", "Data Entry", "GPX Parser", "Data Editor"])
 
 with tab1:
     st.header("Overview")
 
-    kpis = get_top_kpis(filtered_df)
+    # Aggregate per date to avoid overcounting aggregated columns
+    daily_filtered_df = filtered_df.drop_duplicates('Date')
+    kpis = get_top_kpis(daily_filtered_df)
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-    col1.metric("Total Hours", f"{filtered_df['Total Training Hr'].sum():.1f}")
-    col2.metric("Total Miles", f"{filtered_df['Total Mileage (Bike + Run)'].sum():.1f}")
-    col3.metric("Total TSS", f"{filtered_df['Total TSS (Bike + Run)'].sum():.1f}")
-    col4.metric("Avg Watts", f"{filtered_df['Avg Watt (Est)'].mean():.1f}")
-    # col5.metric("Avg Cals Burned", f"{filtered_df['Calories Burned'].mean():.1f}")
+    col1.metric("Total Hours", f"{daily_filtered_df['Total Training Hr'].sum():.1f}")
+    col2.metric("Total Miles", f"{daily_filtered_df['Total Mileage (Bike + Run)'].sum():.1f}")
+    col3.metric("Total TSS", f"{daily_filtered_df['Total TSS (Bike + Run)'].sum():.1f}")
+    col4.metric("Avg Watts", f"{filtered_df['Avg Watt (Est)'].mean():.1f}")  # Keep as average over sessions
+    # col5.metric("Avg Cals Burned", f"{daily_filtered_df['Calories Burned'].mean():.1f}")
     # col6.metric("7d TSS", f"{kpis['7d TSS']:.1f}")
     col5.metric("CTL", f"{kpis['CTL']:.1f}")
     col6.metric("ATL", f"{kpis['ATL']:.1f}")
@@ -198,7 +209,10 @@ with tab5:
 with tab6:
     st.header("Weekly Summary")
     # Resample to weekly using aggregated columns
-    weekly_df = df.set_index('Date').resample('W').agg({
+    # Ensure Date is datetime and drop invalid dates
+    df_weekly = df.dropna(subset=['Date']).copy()
+    df_weekly['Date'] = pd.to_datetime(df_weekly['Date'])
+    weekly_df = df_weekly.set_index('Date').resample('W').agg({
         'Total Training Hr': 'sum',
         'Cycling Duration (hrs)': 'sum',
         'Cycling Distance (mi)': 'sum',
@@ -233,6 +247,7 @@ with tab7:
         date = st.date_input("Date")
         phase = st.selectbox("Phase", ["Build", "Peak", "Sustain", "Deload"])
         location = st.text_input("Location")
+        is_second_session = st.checkbox("Is this a second session for the day?")
         if activity_type == "Cycling":
             duration = st.number_input("Duration (hrs)", min_value=0.0, step=0.1, key="cycling_duration")
             distance = st.number_input("Distance (mi)", min_value=0.0, step=0.1, key="cycling_distance")
@@ -271,70 +286,58 @@ with tab7:
 
         if st.button("Submit Exercise"):
             date_dt = pd.to_datetime(date)
-            new_row = {'Date': date_dt, 'Phase': phase, 'Location': location}
-            if activity_type == "Cycling":
-                new_row['Sport'] = 'Cycling'
-                new_row['Cycling Duration (hrs)'] = duration
-                new_row['Cycling Distance (mi)'] = distance
-                new_row['Cycling Speed (mph)'] = speed
-                new_row['Cycling Elevation (ft)'] = elevation
-                new_row['Avg Watt (Est)'] = avg_watt
-                new_row['Max HR'] = max_hr
-                new_row['Avg HR'] = avg_hr
-                new_row['Z1 Time (min)'] = z1_time
-                new_row['Z2 Time (min)'] = z2_time
-                new_row['Z3 Time (min)'] = z3_time
-                new_row['Z4 Time (min)'] = z4_time
-                new_row['Z5 Time (min)'] = z5_time
-                new_row['Cycling Session Type'] = session_type
-                new_row['Position'] = position
-                new_row['Wind (mph)'] = wind
-                new_row['Temp (°F)'] = temp
-                new_row['Humidity (%)'] = humidity
-                new_row['FTP_used'] = ftp_used
-                new_row['Carb Intake/hr'] = carb_intake_hr
-                new_row['Sodium intra (g)'] = sodium_intra
-                new_row['Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
-                # Check for duplicate: same Date, Sport, Duration, Distance
-                duplicate_mask = (
-                    (df['Date'] == new_row['Date']) &
-                    (df['Sport'] == new_row['Sport']) &
-                    (df['Cycling Duration (hrs)'] == new_row['Cycling Duration (hrs)']) &
-                    (df['Cycling Distance (mi)'] == new_row['Cycling Distance (mi)'])
-                )
+            sport = 'Cycling' if activity_type == "Cycling" else 'Running'
+            existing_sessions = df[(df['Date'] == date_dt) & (df['Sport'] == sport)]
+            if not is_second_session and not existing_sessions.empty:
+                st.error(f"Already have a {sport.lower()} session for this date. Check 'Is this a second session' if it's another one.")
             else:
-                new_row['Sport'] = 'Running'
-                new_row['Run Duration (hrs)'] = duration
-                new_row['Run Dist (mi)'] = distance
-                new_row['Run RPE'] = rpe
-                new_row['Run Session Type'] = session_type
-                new_row['Carb Intake/hr'] = carb_intake_hr
-                new_row['Sodium intra (g)'] = sodium_intra
-                new_row['Max HR'] = max_hr
-                new_row['Avg HR'] = avg_hr
-                new_row['Z1 Time (min)'] = z1_time
-                new_row['Z2 Time (min)'] = z2_time
-                new_row['Z3 Time (min)'] = z3_time
-                new_row['Z4 Time (min)'] = z4_time
-                new_row['Z5 Time (min)'] = z5_time
-                # Check for duplicate: same Date, Sport, Duration, Distance
-                duplicate_mask = (
-                    (df['Date'] == new_row['Date']) &
-                    (df['Sport'] == new_row['Sport']) &
-                    (df['Run Duration (hrs)'] == new_row['Run Duration (hrs)']) &
-                    (df['Run Dist (mi)'] == new_row['Run Dist (mi)'])
-                )
+                new_row = {'Date': date_dt, 'Phase': phase, 'Location': location}
+                if activity_type == "Cycling":
+                    new_row['Sport'] = 'Cycling'
+                    new_row['Cycling Duration (hrs)'] = duration
+                    new_row['Cycling Distance (mi)'] = distance
+                    new_row['Cycling Speed (mph)'] = speed
+                    new_row['Cycling Elevation (ft)'] = elevation
+                    new_row['Avg Watt (Est)'] = avg_watt
+                    new_row['Max HR'] = max_hr
+                    new_row['Avg HR'] = avg_hr
+                    new_row['Z1 Time (min)'] = z1_time
+                    new_row['Z2 Time (min)'] = z2_time
+                    new_row['Z3 Time (min)'] = z3_time
+                    new_row['Z4 Time (min)'] = z4_time
+                    new_row['Z5 Time (min)'] = z5_time
+                    new_row['Cycling Session Type'] = session_type
+                    new_row['Position'] = position
+                    new_row['Wind (mph)'] = wind
+                    new_row['Temp (°F)'] = temp
+                    new_row['Humidity (%)'] = humidity
+                    new_row['FTP_used'] = ftp_used
+                    new_row['Carb Intake/hr'] = carb_intake_hr
+                    new_row['Sodium intra (g)'] = sodium_intra
+                    new_row['Cycling Hydration Index'] = sodium_intra / duration if duration > 0 else 0
+                else:
+                    new_row['Sport'] = 'Running'
+                    new_row['Run Duration (hrs)'] = duration
+                    new_row['Run Dist (mi)'] = distance
+                    new_row['Run RPE'] = rpe
+                    new_row['Run Session Type'] = session_type
+                    new_row['Carb Intake/hr'] = carb_intake_hr
+                    new_row['Sodium intra (g)'] = sodium_intra
+                    new_row['Max HR'] = max_hr
+                    new_row['Avg HR'] = avg_hr
+                    new_row['Z1 Time (min)'] = z1_time
+                    new_row['Z2 Time (min)'] = z2_time
+                    new_row['Z3 Time (min)'] = z3_time
+                    new_row['Z4 Time (min)'] = z4_time
+                    new_row['Z5 Time (min)'] = z5_time
 
-            if not duplicate_mask.any():
                 # Append new row
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
                 # Save to Excel
                 from data_handler import save_master_log
-                save_master_log(df, "sample_data/master_log.xlsx")
+                save_master_log(df, default_path)
                 st.success("Exercise logged successfully!")
                 st.rerun()
-            else:
-                st.error("Duplicate session detected. Please check your inputs.")
 
     with subtab2:
         st.subheader("Log Nutrition")
@@ -364,7 +367,7 @@ with tab7:
                 new_row = {'Date': date_dt, 'Calories In': calories_in, 'Protein (g)': protein, 'Carbs (g)': carbs, 'Fat (g)': fat, 'Sugar (g)': sugar, 'Sodium (g)': sodium, 'Potassium (g)': potassium}
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             from data_handler import save_master_log
-            save_master_log(df, "sample_data/master_log.xlsx")
+            save_master_log(df, default_path)
             st.success("Nutrition logged successfully!")
             st.rerun()
 
@@ -400,12 +403,12 @@ with tab7:
                 new_row = {'Date': date_dt, 'Wake Time': wake_time, 'Sleep (hrs)': sleep, 'RHR': rhr, 'Weight (lbs)': weight, 'Mood (1-10)': mood, 'Energy (1-10)': energy, 'Hunger (1-10)': hunger, 'Dopamine Cravings (1-10)': dopamine_cravings, 'Notes': notes}
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             from data_handler import save_master_log
-            save_master_log(df, "sample_data/master_log.xlsx")
+            save_master_log(df, default_path)
             st.success("Daily check in logged successfully!")
             st.rerun()
 
 with tab8:
-    st.header("Test")
+    st.header("GPX Parser")
     if 'gpx_contents' in st.session_state and st.session_state['gpx_contents']:
         st.subheader("GPX Data Preview")
         gpx_df = load_gpx_files(st.session_state['gpx_contents'], ftp=ftp_input)
@@ -418,9 +421,9 @@ with tab9:
     edited_df = st.data_editor(df, num_rows="dynamic")
     if st.button("Save Changes", key="save_editor"):
         from data_handler import save_master_log
-        save_master_log(edited_df, "sample_data/master_log.xlsx")
+        save_master_log(edited_df, default_path)
         st.success("Changes saved to master_log.xlsx")
 
 # Preview DataFrame
 st.header("Data Preview")
-st.dataframe(df.head())
+st.dataframe(df.sort_values('Date'))
