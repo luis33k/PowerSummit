@@ -152,5 +152,3 @@ This project is currently **NOT open-source**
 and falls under **All Rights Reserved** protection.
 
 ```
-
----
