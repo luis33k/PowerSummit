@@ -9459,3 +9459,11 @@
 2025-11-18 21:09:05,530 - logger - INFO - Loaded Training: 0 rows, Nutrition: 0 rows, Checkin: 0 rows
 2025-11-18 21:09:05,531 - logger - INFO - Combined DataFrame with 0 rows
 2025-11-18 21:09:05,697 - logger - INFO - Computing recovery score: sleep=nan, tsb=nan -> NaN (missing values)
+2025-11-18 21:21:06,046 - logger - INFO - Application started
+2025-11-18 21:21:06,047 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-18 21:21:06,047 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-18 21:21:06,059 - logger - INFO - Loaded sheets: Training (0 rows), Nutrition (0 rows), Checkin (0 rows).
+2025-11-18 21:21:06,074 - logger - INFO - Loaded master log with Training: 0 rows, Nutrition: 0 rows, Checkin: 0 rows.
+2025-11-18 21:21:06,074 - logger - INFO - Loaded Training: 0 rows, Nutrition: 0 rows, Checkin: 0 rows
+2025-11-18 21:21:06,077 - logger - INFO - Combined DataFrame with 0 rows
+2025-11-18 21:21:06,239 - logger - INFO - Computing recovery score: sleep=nan, tsb=nan -> NaN (missing values)
