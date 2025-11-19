@@ -122,11 +122,7 @@ Used to validate metric calculations and test dashboard features.
 
 ## 🖼️ Screenshots (To Add)
 
-![Dashboard Screenshot](images/dashboard.png)
-![Daily Check-in](images/1.png)
-![Run Session](images/2.png)
-![Nutrition](images/4.png)
-![Cycling Log](images/5.png)
+
 
 ---
 
