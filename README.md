@@ -142,8 +142,6 @@ This is currently a **solo project**, but contributions, testing, and feedback a
 
 No part of this repository may be copied, reproduced, distributed, or modified without explicit written permission from the owner.
 
-If you want to open-source it later, the license can be changed.
-
 ---
 
 ## 📝 License
