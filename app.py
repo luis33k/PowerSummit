@@ -27,7 +27,8 @@ logger.info(f"Loaded Training: {len(training_df)} rows, Nutrition: {len(nutritio
 # Combine for metrics and display
 df = pd.concat([training_df, nutrition_df, checkin_df], ignore_index=True)
 df['Date'] = pd.to_datetime(df['Date'])
-logger.info(f"Combined DataFrame with {len(df)} rows")
+df = df.drop_duplicates()  # Remove any duplicates from overlapping data
+logger.info(f"Combined DataFrame with {len(df)} rows after removing duplicates")
 
 # Sidebar
 st.sidebar.title("Controls")
@@ -40,15 +41,8 @@ date_selection_mode = st.sidebar.radio("Date Selection Mode", ["Date Range", "We
 if date_selection_mode == "Date Range":
     start_date = st.sidebar.date_input("Start Date", value=None, key="start_date")
     end_date = st.sidebar.date_input("End Date", value=None, key="end_date")
-    if start_date and end_date:
-        filtered_df = df[(df['Date'] >= pd.to_datetime(start_date)) & (df['Date'] <= pd.to_datetime(end_date))]
-    else:
-        filtered_df = df
 elif date_selection_mode == "Week Range":
     week_start = st.sidebar.date_input("Week Start Date", value=pd.to_datetime('today') - pd.Timedelta(days=pd.to_datetime('today').weekday()), key="week_start")
-    week_end = pd.to_datetime(week_start) + pd.Timedelta(days=6)
-    filtered_df = df[(df['Date'] >= pd.to_datetime(week_start)) & (df['Date'] <= week_end)]
-    st.sidebar.write(f"Selected Week: {week_start.strftime('%Y-%m-%d')} to {week_end.strftime('%Y-%m-%d')}")
 
 show_series = st.sidebar.multiselect("Show Series", ["TSS", "TSB", "Sleep", "Carbs"], default=["TSS", "TSB"])
 
@@ -79,6 +73,17 @@ if uploaded_gpx:
 # Compute metrics
 df = compute_all_metrics(df)
 
+# Apply date filtering after metrics are computed
+if date_selection_mode == "Date Range":
+    if start_date and end_date:
+        filtered_df = df[(df['Date'] >= pd.to_datetime(start_date)) & (df['Date'] <= pd.to_datetime(end_date))]
+    else:
+        filtered_df = df
+elif date_selection_mode == "Week Range":
+    week_end = pd.to_datetime(week_start) + pd.Timedelta(days=6)
+    filtered_df = df[(df['Date'] >= pd.to_datetime(week_start)) & (df['Date'] <= week_end)]
+    st.sidebar.write(f"Selected Week: {week_start.strftime('%Y-%m-%d')} to {week_end.strftime('%Y-%m-%d')}")
+
 # Save computed DataFrame back to Excel so computed columns are visible
 from data_handler import save_master_log
 save_master_log(df, default_path)
@@ -94,7 +99,13 @@ with tab1:
     st.header("Overview")
 
     # Aggregate per date to avoid overcounting aggregated columns
-    daily_filtered_df = filtered_df.drop_duplicates('Date')
+    daily_filtered_df = filtered_df.drop_duplicates('Date').sort_values('Date').reset_index(drop=True)
+    logger.info(f"daily_filtered_df columns: {daily_filtered_df.columns.tolist()}")
+    if 'TSB (EWMA)' in daily_filtered_df.columns:
+        logger.info(f"TSB (EWMA) values: {daily_filtered_df['TSB (EWMA)'].head()}")
+        logger.info(f"TSB (EWMA) not null count: {daily_filtered_df['TSB (EWMA)'].notna().sum()}")
+    else:
+        logger.info("TSB (EWMA) column not found in daily_filtered_df")
     kpis = get_top_kpis(daily_filtered_df)
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     col1.metric("Total Hours", f"{daily_filtered_df['Total Training Hr'].sum():.1f}")
@@ -105,11 +116,11 @@ with tab1:
     # col6.metric("7d TSS", f"{kpis['7d TSS']:.1f}")
     col5.metric("CTL", f"{kpis['CTL']:.1f}")
     col6.metric("ATL", f"{kpis['ATL']:.1f}")
-    col7.metric("Avg Sleep 7d", f"{kpis['Avg Sleep 7d']:.1f}")
+    col7.metric("Latest TSB", f"{kpis['Latest TSB']:.1f}")
 
     # Small graphs
     st.subheader("TSS & TSB Over Time")
-    fig1 = plot_tss_tsb_over_time(filtered_df, show_series)
+    fig1 = plot_tss_tsb_over_time(daily_filtered_df, show_series)
     st.plotly_chart(fig1, width='stretch')
 
     st.subheader("Weekly TSS")
@@ -333,6 +344,8 @@ with tab7:
 
                 # Append new row
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                # Compute metrics to ensure consistency
+                df = compute_all_metrics(df)
                 # Save to Excel
                 from data_handler import save_master_log
                 save_master_log(df, default_path)
@@ -366,6 +379,8 @@ with tab7:
                 # Append new row
                 new_row = {'Date': date_dt, 'Calories In': calories_in, 'Protein (g)': protein, 'Carbs (g)': carbs, 'Fat (g)': fat, 'Sugar (g)': sugar, 'Sodium (g)': sodium, 'Potassium (g)': potassium}
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            # Compute metrics to ensure consistency
+            df = compute_all_metrics(df)
             from data_handler import save_master_log
             save_master_log(df, default_path)
             st.success("Nutrition logged successfully!")
@@ -402,6 +417,8 @@ with tab7:
                 # Append new row
                 new_row = {'Date': date_dt, 'Wake Time': wake_time, 'Sleep (hrs)': sleep, 'RHR': rhr, 'Weight (lbs)': weight, 'Mood (1-10)': mood, 'Energy (1-10)': energy, 'Hunger (1-10)': hunger, 'Dopamine Cravings (1-10)': dopamine_cravings, 'Notes': notes}
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            # Compute metrics to ensure consistency
+            df = compute_all_metrics(df)
             from data_handler import save_master_log
             save_master_log(df, default_path)
             st.success("Daily check in logged successfully!")
@@ -423,7 +440,9 @@ with tab9:
         from data_handler import save_master_log
         save_master_log(edited_df, default_path)
         st.success("Changes saved to master_log.xlsx")
+    st.header("Data Preview")
+    st.dataframe(df.sort_values('Date'))
 
 # Preview DataFrame
-st.header("Data Preview")
-st.dataframe(df.sort_values('Date'))
+# st.header("Data Preview")
+# st.dataframe(df.sort_values('Date'))

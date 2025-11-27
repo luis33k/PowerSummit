@@ -81,6 +81,7 @@ def load_master_log(path: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame
         if 'Date' in df.columns:
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
             df = df.sort_values('Date').reset_index(drop=True)
+        df = df.drop_duplicates()
 
     logger.info(f"Loaded master log with Training: {len(training_df)} rows, Nutrition: {len(nutrition_df)} rows, Checkin: {len(checkin_df)} rows.")
     return training_df, nutrition_df, checkin_df
@@ -155,24 +156,26 @@ def merge_gpx_data(df: pd.DataFrame, gpx_df: pd.DataFrame) -> pd.DataFrame:
 def save_master_log(df: pd.DataFrame, path: str):
     """
     Save the master log DataFrame to an Excel file with separate sheets for Training, Nutrition, Checkin.
+    Use mutually exclusive masks to prevent overlapping rows.
 
     Args:
         df (pd.DataFrame): Combined DataFrame to split and save.
         path (str): Path to the Excel file.
     """
-    # Split df into separate sheets
-    # Training: rows with Sport or cycling/running columns filled
-    training_cols = ['Date', 'Phase', 'Sport', 'Location', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned']
+    # Define mutually exclusive masks
     training_mask = df['Sport'].notna() | df[['Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Run Duration (hrs)', 'Run Dist (mi)']].notna().any(axis=1)
+    nutrition_mask = df['Calories In'].notna() & ~training_mask
+    checkin_mask = df['Sleep (hrs)'].notna() & ~training_mask & ~nutrition_mask
+
+    # Split df into separate sheets
+    training_cols = ['Date', 'Phase', 'Sport', 'Location', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned']
     training_df = df[training_mask][training_cols].dropna(how='all')
 
-    # Nutrition: rows with nutrition columns filled
     nutrition_cols = ['Date', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)']
-    nutrition_df = df[nutrition_cols].dropna(how='all')
+    nutrition_df = df[nutrition_mask][nutrition_cols].dropna(how='all')
 
-    # Checkin: rows with checkin columns filled
     checkin_cols = ['Date', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes']
-    checkin_df = df[checkin_cols].dropna(how='all')
+    checkin_df = df[checkin_mask][checkin_cols].dropna(how='all')
 
     with pd.ExcelWriter(path, engine='openpyxl') as writer:
         training_df.to_excel(writer, sheet_name='Training', index=False)

@@ -82,6 +82,7 @@ def calculate_total_tss(df: pd.DataFrame) -> pd.Series:
 def calculate_atl_ctl_tsb(total_tss: pd.Series, span_atl: int = 7, span_ctl: int = 42) -> tuple:
     """
     Compute EWMA-based ATL (span=7 days) and CTL (span=42 days) on Total TSS, and TSB = CTL - ATL.
+    Use adjust=False for exponential moving average.
 
     Args:
         total_tss (pd.Series): Total TSS series.
@@ -91,8 +92,10 @@ def calculate_atl_ctl_tsb(total_tss: pd.Series, span_atl: int = 7, span_ctl: int
     Returns:
         tuple: (ATL, CTL, TSB)
     """
-    atl = total_tss.ewm(span=span_atl).mean()
-    ctl = total_tss.ewm(span=span_ctl).mean()
+    # Ensure total_tss is float
+    total_tss = total_tss.astype(float)
+    atl = total_tss.ewm(span=span_atl, adjust=False).mean()
+    ctl = total_tss.ewm(span=span_ctl, adjust=False).mean()
     tsb = ctl - atl
     return atl, ctl, tsb
 
@@ -178,9 +181,14 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
         df['Run Calories Burned'] = met * weight_kg * df['Run Duration (hrs)']
         df['Run KJ'] = df['Run Calories Burned'] * 4.184
 
-    # Fill NaN TSS with 0 to ensure sums work
-    df['Cycling TSS (Est)'] = df['Cycling TSS (Est)'].fillna(0)
-    df['Run TSS (Est)'] = df['Run TSS (Est)'].fillna(0)
+    # Ensure TSS columns exist before filling
+    if 'Cycling TSS (Est)' not in df.columns:
+        df['Cycling TSS (Est)'] = 0.0
+    if 'Run TSS (Est)' not in df.columns:
+        df['Run TSS (Est)'] = 0.0
+    # Fill NaN TSS with 0 to ensure sums work and convert to float
+    df['Cycling TSS (Est)'] = df['Cycling TSS (Est)'].fillna(0).astype(float)
+    df['Run TSS (Est)'] = df['Run TSS (Est)'].fillna(0).astype(float)
 
     # Aggregate totals per date
     agg_df = df.groupby('Date').agg({
@@ -244,11 +252,28 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
             agg_df[f'{col} (7d Avg)'] = agg_df.set_index('Date')[col].rolling(window=7).mean().reset_index(drop=True)
             agg_df[f'{col} (7d Avg)'] = pd.to_numeric(agg_df[f'{col} (7d Avg)'], errors='coerce').ffill()
 
+    # Reindex to daily for accurate EWMA and rolling
+    agg_df = agg_df.sort_values('Date')
+    date_min = agg_df['Date'].min()
+    date_max = agg_df['Date'].max()
+    date_range = pd.date_range(start=date_min, end=date_max, freq='D')
+
     # Fitness/Fatigue Formulas on aggregated TSS
-    atl, ctl, tsb = calculate_atl_ctl_tsb(agg_df['Total TSS (Bike + Run)'])
-    agg_df['ATL (7d EWMA)'] = atl
-    agg_df['CTL (42d EWMA)'] = ctl
-    agg_df['TSB (EWMA)'] = tsb
+    tss_series = agg_df.set_index('Date')['Total TSS (Bike + Run)'].reindex(date_range, fill_value=0)
+    atl = tss_series.ewm(span=7, adjust=False).mean()
+    ctl = tss_series.ewm(span=42, adjust=False).mean()
+    tsb = ctl - atl
+    agg_df['ATL (7d EWMA)'] = atl.loc[agg_df['Date']].values
+    agg_df['CTL (42d EWMA)'] = ctl.loc[agg_df['Date']].values
+    agg_df['TSB (EWMA)'] = tsb.loc[agg_df['Date']].values
+
+    # Rolling Metrics (7-day averages) on aggregated data
+    rolling_cols = ['Total TSS (Bike + Run)', 'Sleep (hrs)', 'Carb Intake/hr', 'Surplus/Deficit', 'Total KJ']
+    for col in rolling_cols:
+        if col in agg_df.columns:
+            series = agg_df.set_index('Date')[col].reindex(date_range, fill_value=np.nan)
+            agg_df[f'{col} (7d Avg)'] = series.rolling(window=7).mean().loc[agg_df['Date']].values
+            agg_df[f'{col} (7d Avg)'] = pd.to_numeric(agg_df[f'{col} (7d Avg)'], errors='coerce').ffill()
 
     # Recovery Rate based on Phase
     phase_mapping = {'Build': 1.5, 'Peak': 1.5, 'Sustain': 2.0, 'Deload': 3.0}
@@ -281,5 +306,7 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
     for key in aggregated_keys:
         if f'{key}_agg' in df.columns:
             df.rename(columns={f'{key}_agg': key}, inplace=True)
+
+    df = df.sort_values('Date').reset_index(drop=True)
 
     return df

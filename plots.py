@@ -29,7 +29,7 @@ def plot_tss_tsb_over_time(df: pd.DataFrame, show_series: list = ["TSS", "TSB"])
         fig.add_trace(go.Scatter(x=df['Date'], y=df[tss_col], name="Total TSS"), secondary_y=False)
         has_primary = True
 
-    if "TSB" in show_series:
+    if "TSB" in show_series and 'TSB (EWMA)' in df.columns:
         fig.add_trace(go.Scatter(x=df['Date'], y=df['TSB (EWMA)'], name="TSB"), secondary_y=True)
         has_secondary = True
 
