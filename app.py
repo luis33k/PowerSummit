@@ -21,14 +21,8 @@ st.set_page_config(page_title="Training Dashboard", layout="wide")
 default_path = "data/master_log.xlsx"
 os.makedirs("data", exist_ok=True)
 logger.info(f"Loading master log from {default_path}")
-training_df, nutrition_df, checkin_df = load_master_log(default_path)
-logger.info(f"Loaded Training: {len(training_df)} rows, Nutrition: {len(nutrition_df)} rows, Checkin: {len(checkin_df)} rows")
-
-# Combine for metrics and display
-df = pd.concat([training_df, nutrition_df, checkin_df], ignore_index=True)
-df['Date'] = pd.to_datetime(df['Date'])
-df = df.drop_duplicates()  # Remove any duplicates from overlapping data
-logger.info(f"Combined DataFrame with {len(df)} rows after removing duplicates")
+df = load_master_log(default_path)
+logger.info(f"Loaded combined DataFrame with {len(df)} rows")
 
 # Sidebar
 st.sidebar.title("Controls")

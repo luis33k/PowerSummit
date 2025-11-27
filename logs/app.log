@@ -14274,3 +14274,381 @@ Name: TSB (EWMA), dtype: float64
 2025-11-26 20:18:13,673 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
 2025-11-26 20:18:13,673 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
 2025-11-26 20:18:13,673 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:05,399 - logger - INFO - Data handler module initialized
+2025-11-26 20:23:05,400 - logger - INFO - GPX parser module initialized
+2025-11-26 20:23:05,401 - logger - INFO - Metrics module initialized
+2025-11-26 20:23:05,402 - logger - INFO - Plots module initialized
+2025-11-26 20:23:05,403 - logger - INFO - Utils module initialized
+2025-11-26 20:23:05,403 - logger - INFO - Application started
+2025-11-26 20:23:05,404 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:05,404 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:05,425 - logger - INFO - Loaded separate sheets: Training (12 rows), Nutrition (0 rows), Checkin (0 rows).
+2025-11-26 20:23:05,451 - logger - INFO - Merged into Combined DataFrame with 12 rows.
+2025-11-26 20:23:05,455 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:05,456 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:05,564 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:05,566 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:05,566 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:05,664 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:05,665 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:05,665 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:05,665 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:05,665 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:05,666 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:05,666 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:05,666 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:05,666 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:05,666 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:05,666 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:05,666 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:27,995 - logger - INFO - Application started
+2025-11-26 20:23:27,996 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:27,996 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:28,027 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:28,033 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:28,033 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:28,136 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:28,137 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:28,138 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:28,236 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:28,236 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:28,236 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:28,237 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:28,237 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:28,237 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:28,237 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:28,237 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:28,238 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:28,238 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:28,238 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:28,238 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:31,860 - logger - INFO - Application started
+2025-11-26 20:23:31,861 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:31,862 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:31,893 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:31,899 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:31,899 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:31,996 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:31,997 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:31,998 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:32,094 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:32,094 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:32,094 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:32,094 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:32,094 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:32,095 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:32,095 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:32,095 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:32,095 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:32,095 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:32,096 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:32,096 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:33,879 - logger - INFO - Application started
+2025-11-26 20:23:33,879 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:33,880 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:33,911 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:33,917 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:33,917 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:34,013 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:34,014 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:34,014 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:34,107 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:34,107 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:34,107 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:34,108 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:34,108 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:34,108 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:34,108 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:34,108 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:34,108 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:34,109 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:34,109 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:34,109 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:35,462 - logger - INFO - Application started
+2025-11-26 20:23:35,463 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:35,464 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:35,495 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:35,500 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:35,500 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:35,595 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:35,596 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:35,596 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:35,689 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:35,690 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:35,690 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:35,690 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:35,691 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:35,691 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:35,691 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:35,691 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:35,691 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:35,692 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:35,692 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:35,692 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:36,712 - logger - INFO - Application started
+2025-11-26 20:23:36,712 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:36,713 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:36,744 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:36,750 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:36,750 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:36,843 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:36,844 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:36,845 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:36,938 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:36,938 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:36,938 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:36,938 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:36,938 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:36,939 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:36,939 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:36,939 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:36,939 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:36,939 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:36,939 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:36,939 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:38,181 - logger - INFO - Application started
+2025-11-26 20:23:38,182 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:38,182 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:38,215 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:38,220 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:38,220 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:38,318 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:38,319 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:38,320 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:38,413 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:38,414 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:38,414 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:38,414 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:38,414 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:38,415 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:38,415 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:38,415 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:38,415 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:38,415 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:38,415 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:38,415 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:39,480 - logger - INFO - Application started
+2025-11-26 20:23:39,480 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:39,481 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:39,512 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:39,518 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:39,518 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:39,616 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:39,617 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:39,617 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:39,712 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:39,712 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:39,713 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:39,713 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:39,713 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:39,714 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:39,714 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:39,714 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:39,714 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:39,714 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:39,715 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:39,715 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:40,414 - logger - INFO - Application started
+2025-11-26 20:23:40,415 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:40,415 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:40,446 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:40,452 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:40,452 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:40,548 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:40,549 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:40,549 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:40,645 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:40,645 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:40,645 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:40,646 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:40,646 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:40,646 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:40,646 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:40,647 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:40,647 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:40,647 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:40,647 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:40,647 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:43,562 - logger - INFO - Application started
+2025-11-26 20:23:43,563 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:43,563 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:43,596 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:43,601 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:43,602 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:43,707 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:43,708 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:43,709 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:43,807 - logger - INFO - Computing recovery score: sleep=nan, tsb=0.0 -> NaN (missing values)
+2025-11-26 20:23:43,807 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:43,807 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:43,808 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:43,808 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:43,808 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:43,808 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:43,809 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:43,809 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:43,809 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:43,809 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:43,809 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:23:44,025 - logger - INFO - Application started
+2025-11-26 20:23:44,026 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:23:44,026 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:23:44,059 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:23:44,065 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:23:44,065 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:23:44,164 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Week', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:23:44,165 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:23:44,165 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:23:44,265 - logger - INFO - Computing recovery score: sleep=7.0, tsb=0.0 -> score=0.5
+2025-11-26 20:23:44,265 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:23:44,266 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:23:44,266 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:23:44,266 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:23:44,266 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:23:44,267 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:23:44,267 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:23:44,267 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:23:44,267 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:23:44,267 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:23:44,267 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:24:06,300 - logger - INFO - Application started
+2025-11-26 20:24:06,301 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:24:06,301 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:24:06,335 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:24:06,340 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:24:06,341 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:24:06,440 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Week', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:24:06,441 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:24:06,442 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:24:06,540 - logger - INFO - Computing recovery score: sleep=7.0, tsb=0.0 -> score=0.5
+2025-11-26 20:24:06,540 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:24:06,540 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:24:06,541 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:24:06,541 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:24:06,541 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:24:06,541 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:24:06,541 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:24:06,541 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:24:06,542 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:24:06,542 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:24:06,542 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:24:10,583 - logger - INFO - Application started
+2025-11-26 20:24:10,583 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:24:10,584 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:24:10,615 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:24:10,621 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:24:10,621 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:24:10,715 - logger - INFO - daily_filtered_df columns: ['Date', 'Sport', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Wake Time', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ', 'Week', 'Total Cycling Hr', 'Total Run Hr', 'Total Cycling Dist', 'Total Run Dist', 'Total Cycling KJ', 'Total Run KJ', 'Total Cycling TSS', 'Total Run TSS', 'Total Cycling Calories', 'Total Run Calories', 'Calories In', 'Sleep (hrs)', 'RHR', 'Weight (lbs)', 'Mood (1-10)', 'Carb Intake/hr', 'Phase', 'Location', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total KJ', 'Total TSS (Bike + Run)', 'Calories Burned', 'Surplus/Deficit', 'RHR Variability', 'Recovery Score', 'Total TSS (Bike + Run) (7d Avg)', 'Sleep (hrs) (7d Avg)', 'Carb Intake/hr (7d Avg)', 'Surplus/Deficit (7d Avg)', 'Total KJ (7d Avg)', 'ATL (7d EWMA)', 'CTL (42d EWMA)', 'TSB (EWMA)', 'recovery_rate', 'relative_tsb']
+2025-11-26 20:24:10,716 - logger - INFO - TSB (EWMA) values: 0     0.000000
+1    15.912910
+2    19.748381
+3    10.873169
+4    10.950220
+Name: TSB (EWMA), dtype: float64
+2025-11-26 20:24:10,716 - logger - INFO - TSB (EWMA) not null count: 12
+2025-11-26 20:24:10,809 - logger - INFO - Computing recovery score: sleep=7.0, tsb=0.0 -> score=0.5
+2025-11-26 20:24:10,809 - logger - INFO - Computing recovery score: sleep=nan, tsb=15.912910094116313 -> NaN (missing values)
+2025-11-26 20:24:10,810 - logger - INFO - Computing recovery score: sleep=nan, tsb=19.748381403658584 -> NaN (missing values)
+2025-11-26 20:24:10,810 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.87316875443355 -> NaN (missing values)
+2025-11-26 20:24:10,810 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.950219545305856 -> NaN (missing values)
+2025-11-26 20:24:10,810 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.0095753339459748 -> NaN (missing values)
+2025-11-26 20:24:10,810 - logger - INFO - Computing recovery score: sleep=nan, tsb=9.263350727401075 -> NaN (missing values)
+2025-11-26 20:24:10,811 - logger - INFO - Computing recovery score: sleep=nan, tsb=10.71839130808803 -> NaN (missing values)
+2025-11-26 20:24:10,811 - logger - INFO - Computing recovery score: sleep=nan, tsb=13.703555763699654 -> NaN (missing values)
+2025-11-26 20:24:10,811 - logger - INFO - Computing recovery score: sleep=nan, tsb=8.244459246589628 -> NaN (missing values)
+2025-11-26 20:24:10,811 - logger - INFO - Computing recovery score: sleep=nan, tsb=-1.8573744055916563 -> NaN (missing values)
+2025-11-26 20:24:10,811 - logger - INFO - Computing recovery score: sleep=nan, tsb=-5.285437965041666 -> NaN (missing values)
+2025-11-26 20:24:14,463 - logger - INFO - Application started
+2025-11-26 20:24:14,463 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:24:14,464 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:24:14,496 - logger - INFO - Loaded from Combined sheet (12 rows).
+2025-11-26 20:24:14,501 - logger - INFO - Loaded master log with 12 rows.
+2025-11-26 20:24:14,501 - logger - INFO - Loaded combined DataFrame with 12 rows
+2025-11-26 20:24:14,556 - logger - INFO - Application started
+2025-11-26 20:24:14,557 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:24:14,557 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:24:14,575 - logger - WARNING - Failed to load master log from data/master_log.xlsx: File is not a zip file. Recreating empty file.
+2025-11-26 20:24:14,600 - logger - INFO - Recreated master log file data/master_log.xlsx with empty Combined sheet.
+2025-11-26 20:24:14,601 - logger - INFO - Loaded separate sheets: Training (0 rows), Nutrition (0 rows), Checkin (0 rows).
+2025-11-26 20:24:14,618 - logger - INFO - Merged into Combined DataFrame with 0 rows.
+2025-11-26 20:24:14,619 - logger - INFO - Loaded master log with 0 rows.
+2025-11-26 20:24:14,620 - logger - INFO - Loaded combined DataFrame with 0 rows
+2025-11-26 20:25:30,978 - logger - INFO - Data handler module initialized
+2025-11-26 20:25:31,011 - logger - INFO - GPX parser module initialized
+2025-11-26 20:25:31,613 - logger - INFO - Metrics module initialized
+2025-11-26 20:25:31,677 - logger - INFO - Plots module initialized
+2025-11-26 20:25:31,679 - logger - INFO - Utils module initialized
+2025-11-26 20:25:31,679 - logger - INFO - Application started
+2025-11-26 20:25:31,680 - logger - INFO - Loading master log from data/master_log.xlsx
+2025-11-26 20:25:31,680 - logger - INFO - Loading master log from data/master_log.xlsx.
+2025-11-26 20:25:31,817 - logger - WARNING - Failed to load master log from data/master_log.xlsx: Bad CRC-32 for file 'xl/worksheets/sheet1.xml'. Recreating empty file.
+2025-11-26 20:25:31,834 - logger - INFO - Recreated master log file data/master_log.xlsx with empty Combined sheet.
+2025-11-26 20:25:31,835 - logger - INFO - Loaded separate sheets: Training (0 rows), Nutrition (0 rows), Checkin (0 rows).
+2025-11-26 20:25:31,853 - logger - INFO - Merged into Combined DataFrame with 0 rows.
+2025-11-26 20:25:31,854 - logger - INFO - Loaded master log with 0 rows.
+2025-11-26 20:25:31,854 - logger - INFO - Loaded combined DataFrame with 0 rows
+2025-11-26 20:25:32,185 - logger - WARNING - No valid dates in DataFrame, skipping EWMA and rolling calculations
+2025-11-26 20:25:32,229 - logger - INFO - daily_filtered_df columns: ['Date', 'Phase', 'Sport', 'Location', 'Cycling Duration (hrs)', 'Cycling Distance (mi)', 'Cycling Speed (mph)', 'Cycling Elevation (ft)', 'Avg Watt (Est)', 'Cycling Session Type', 'Position', 'Wind (mph)', 'Temp (°F)', 'Humidity (%)', 'FTP_used', 'Carb Intake/hr', 'Sodium intra (g)', 'Cycling Hydration Index', 'Max HR', 'Avg HR', 'Z1 Time (min)', 'Z2 Time (min)', 'Z3 Time (min)', 'Z4 Time (min)', 'Z5 Time (min)', 'Run Duration (hrs)', 'Run Dist (mi)', 'Run RPE', 'Run Session Type', 'Cycling TSS (Est)', 'Run TSS (Est)', 'Cycling Intensity Factor (IF)', 'Run Intensity Factor (IF)', 'Total Training Hr', 'Total Mileage (Bike + Run)', 'Total TSS (Bike + Run)', 'Total KJ', 'Calories Burned', 'Calories In', 'Protein (g)', 'Carbs (g)', 'Fat (g)', 'Sugar (g)', 'Sodium (g)', 'Potassium (g)', 'Weight (lbs)', 'Surplus/Deficit', 'Wake Time', 'Sleep (hrs)', 'RHR', 'Mood (1-10)', 'Energy (1-10)', 'Hunger (1-10)', 'Dopamine Cravings (1-10)', 'Notes', 'TSS (EWMA)', 'TSB (EWMA)', 'ATL (EWMA)', 'CTL (EWMA)', 'Cycling KJ', 'Cycling Calories Burned', 'Run Calories Burned', 'Run KJ']
+2025-11-26 20:25:32,230 - logger - INFO - TSB (EWMA) values: Series([], Name: TSB (EWMA), dtype: float64)
+2025-11-26 20:25:32,230 - logger - INFO - TSB (EWMA) not null count: 0
+2025-11-26 20:25:32,455 - logger - INFO - Computing recovery score: sleep=nan, tsb=nan -> NaN (missing values)

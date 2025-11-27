@@ -253,7 +253,10 @@ def compute_all_metrics(df: pd.DataFrame) -> pd.DataFrame:
             agg_df[f'{col} (7d Avg)'] = pd.to_numeric(agg_df[f'{col} (7d Avg)'], errors='coerce').ffill()
 
     # Reindex to daily for accurate EWMA and rolling
-    agg_df = agg_df.sort_values('Date')
+    agg_df = agg_df.dropna(subset=['Date']).sort_values('Date')
+    if agg_df.empty:
+        logger.warning("No valid dates in DataFrame, skipping EWMA and rolling calculations")
+        return df
     date_min = agg_df['Date'].min()
     date_max = agg_df['Date'].max()
     date_range = pd.date_range(start=date_min, end=date_max, freq='D')
